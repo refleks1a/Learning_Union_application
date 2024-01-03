@@ -7,7 +7,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     university = serializers.CharField(source="author.university")
     major = serializers.CharField(source="author.major")
-    rating = serializers.DecimalField(source="author.rating")
+    rating = serializers.DecimalField(source="author.rating", max_digits=6, decimal_places=2,)
     top_helper = serializers.BooleanField(source="author.top_helper")
 
 
