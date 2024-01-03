@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
     first_name = serializers.SerializerMethodField()
     last_name = serializers.SerializerMethodField()
     fathers_name =serializers.SerializerMethodField()
-    full_name = serializers.SerializerMethodField()
+    full_name = serializers.SerializerMethodField(source="get_full_name")
 
 
     class Meta:
@@ -57,5 +57,5 @@ class CreateUserSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = ["id", "username" , "email", "first_name",
-                  "last_name", "password"]
+                  "last_name", "fathers_name", "password"]
         
