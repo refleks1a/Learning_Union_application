@@ -14,8 +14,9 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ["question", "title", "date_answered",
-                  "username", "email", "full_name"]
+        fields = ["question", "title", "description", "date_answered",
+                  "username", "email", "full_name", "image_1",
+                  "image_2", "image_3"]
         
         
     def get_full_name(self, obj):
@@ -29,7 +30,31 @@ class AnswerSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        if instance.top_helper:
+        if instance.is_solution:
             representation["is_solution"] = True
 
         return representation
+    
+
+class UpdateAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer  
+        fields = ["title", "description", "image_1",
+                  "image_2", "image_3"]
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        if instance.is_solution:
+            representation["is_solution"] = True
+
+        return representation     
+    
+
+class CreateAnswerSerializer(serializers.ModelSerializer):
+
+        class Meta:
+            model = Answer
+            exclude = ["date_answered", "date_modified", "is_solution"]

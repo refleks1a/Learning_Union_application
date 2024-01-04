@@ -33,7 +33,7 @@ class ProfileSerializer(serializers.ModelSerializer):
                   "profile_photo", "about_me","gender","country",
                   "city", "university", "major", "education_language", "year_of_study",
                   "degree_type", "is_student", "is_teacher", "is_other",
-                  "answers", "questions",
+                  "answers", "questions", 
                   ]
         
 
@@ -89,3 +89,4 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             representation["top_helper"] = True
 
         return representation     
+        

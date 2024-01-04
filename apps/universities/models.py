@@ -50,6 +50,6 @@ class University(models.Model):
         default=0, blank=True, null=True)
     
     activity_lvl = models.IntegerField(verbose_name=_("Activity level of the university on the website"), 
-        choices=Range.choices, default=0, help_text=_("1=Poor, 2=Fair, 3=Good, 4=Very good, 5=Excellent"))
+        choices=Range.choices, default=0, help_text=_("1=Poor, 2=Fair, 3=Good, 4=Very good, 5=excellent"))
     
     is_active = models.BooleanField(default=False)

@@ -36,6 +36,7 @@ class GetProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [ProfileJSONRenderer] 
 
+
     def get(self, request):
         user = self.request.user
         user_profile = Profile.objects.get(user=user)
@@ -49,6 +50,7 @@ class UpdateProfileAPIView(APIView):
     renderer_classes = [ProfileJSONRenderer] 
 
     serializer_class = UpdateProfileSerializer
+
 
     def patch(self, request, username):
         try:
