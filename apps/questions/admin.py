@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question
+from .models import Question, QuestionViews
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -14,4 +14,5 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display_links = ["id", "title"]
 
 
-admin.site.register(Question, QuestionAdmin)    
+admin.site.register(Question, QuestionAdmin)   
+admin.site.register(QuestionViews) 

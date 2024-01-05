@@ -1,6 +1,9 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
@@ -8,28 +11,46 @@ from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
-class StudentsListAPIView(generics.ListAPIView):
+class ProfilesFilter(django_filters.FilterSet):
+    rating_gte = django_filters.NumberFilter(
+        field_name="rating", lookup_expr="gte"
+    )
+    rating_lte = django_filters.NumberFilter(
+        field_name="rating", lookup_expr="lte"
+    )
+    num_reviews_gte = django_filters.NumberFilter(
+        field_name="num_reviews", lookup_expr="gte"
+    )
+    num_reviews_lte = django_filters.NumberFilter(
+        field_name="num_reviews", lookup_expr="lte"
+    )
+    num_reviews_gte = django_filters.NumberFilter(
+        field_name="num_reviews", lookup_expr="gte"
+    )
+    num_reviews_lte = django_filters.NumberFilter(
+        field_name="num_reviews", lookup_expr="lte"
+    )
+    top_helper = django_filters.BooleanFilter(field_name="top_helper")
+    is_student = django_filters.BooleanFilter(field_name="is_student")
+    is_teacher = django_filters.BooleanFilter(field_name="is_teacher")
+    is_other = django_filters.BooleanFilter(field_name="is_other")
+
+    class Meta:
+        model = Profile
+        fields = ["rating", "num_reviews", "top_helper",
+                  "is_student", "is_teacher", "is_other"]
+
+
+class ProfilesListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Profile.objects.filter(is_student=True)
+    queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-
-
-class TeachersListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Profile.objects.filter(is_teacher=True)
-    serializer_class = ProfileSerializer
-
-
-class OthersListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Profile.objects.filter(is_other=True)
-    serializer_class = ProfileSerializer 
-
-
-class TopHelpersListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Profile.objects.filter(top_helper=True)
-    serializer_class = ProfileSerializer
+    filter_backends = [
+        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
+    ]
+    filterset_class = ProfilesFilter
+    search_fields = ["user.username", "user.get_full_name"]
+    ordering_fields = ["top_helper", "rating", "num_reviews"]
 
 
 class GetProfileAPIView(APIView):

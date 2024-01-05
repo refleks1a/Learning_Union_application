@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from .models import Question
-from apps.profiles.models import Profile
+from .models import Question, QuestionViews
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -48,3 +47,10 @@ class CreateQuestionSerializer(serializers.ModelSerializer):
         exclude = ["num_views", "num_answers", "date_asked",
                    "date_modified", "date_last_view", 
                    "solved_status", "is_active"]
+        
+
+class QuestionViewsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionViews
+        exclude = ["updated_at", "pkid"]

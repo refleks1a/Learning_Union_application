@@ -1,8 +1,11 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 import logging
+
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Answer
 from .serializers import AnswerSerializer, UpdateAnswerSerializer, CreateAnswerSerializer, UpdateIsSolutionSerializer
@@ -18,51 +21,70 @@ from apps.profiles.exceptions import ProfileNotFound
 logger = logging.getLogger(__name__)
 
 
-class GetAnswersOnQuestionAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class AnswerFilter(django_filters.FilterSet):
+    title = django_filters.CharFilter(
+        field_name="title", lookup_expr="contains"
+    )
+    description = django_filters.CharFilter(
+        field_name="description", lookup_expr="contains"
+    )
+    is_solution = django_filters.BooleanFilter(field_name="is_solution")
 
-    def get(self, request, id):
+    class Meta:
+        model = Answer
+        fields = ["title", "description", "is_solution"]
+
+
+class GetAnswersOnQuestionAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = AnswerSerializer
+    filter_backends = [
+        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
+    ]
+    filterset_class = AnswerFilter
+    search_fields = ["title", "description","author.user.username", 
+                     "author.user.get_full_name"]
+    ordering_fields = ["date_answered", "date_modified"]
+    
+    def get_queryset(self):
+        id = self.request.query_params.get('id')
+        print(id)
         try:
-            Question.objects.get(id=id)
+            question = Question.objects.get(id=id)
         except Question.DoesNotExist:
             raise QuestionNotFound
         try:
-            question = Question.objects.get(id=id)
-            Answer.objects.filter(question=question)
+            answers = Answer.objects.filter(question=question)
         except Answer.DoesNotExist:
             raise AnswerNotFound
-
-        question = Question.objects.get(id=id)
-        answers = Answer.objects.filter(question=question)
         
-        serializer = AnswerSerializer(answers, context={"request":request}, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        queryset = answers.order_by("-date_modified")
+        return queryset
     
 
-class GetUsersAnswersAPIView(APIView):
+class GetUsersAnswersAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = AnswerSerializer
+    filter_backends = [
+        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
+    ]
+    filterset_class = AnswerFilter
+    search_fields = ["title", "description"]
+    ordering_fields = ["date_answered", "date_modified"]
 
-    def get(self, request):
+    def get_queryset(self):
         try:
-            user = request.user
+            user = self.request.user
             user_profile = Profile.objects.get(user=user)
         except Profile.DoesNotExist:
             raise ProfileNotFound
         
         try:
-            Answer.objects.filter(author=user_profile)
+            answers = Answer.objects.filter(author=user_profile)
         except Answer.DoesNotExist:
             raise AnswerNotFound    
             
-
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-
-        answers = Answer.objects.filter(author=user_profile)
-        serializer = AnswerSerializer(answers, context={"request": request}, many=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return answers
 
 
 class GetAnswerAPIView(APIView):
@@ -103,38 +125,6 @@ class UpdateAnswerAPIView(APIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class IsSolutionAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def patch(self, request, id):
-        try:
-            answer = Answer.objects.get(id=id)
-        except Answer.DoesNotExist:
-            raise AnswerNotFound    
-
-        user = request.user
-        user_profile = Profile.objects.get(user=user)
-
-        if answer.question.author != user_profile:
-            raise PermissionDenied
-
-        data = request.data
-
-        if data["is_solution"] == "True" and not answer.question.solved_status:
-            answer.question.solved_status = True
-            answer.question.save()
-        elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(id=id):
-            answer.question.solved_status = False
-            answer.question.save()
-    
-        serializer = UpdateIsSolutionSerializer(instance=answer, data=data, partial=True)
-
-        serializer.is_valid()
-        serializer.save()
-
-        return Response(serializer.errors, status=status.HTTP_200_OK)
 
 
 class CreteAnswerAPIView(APIView):
@@ -192,3 +182,35 @@ class DeleteAnswerAPIView(APIView):
             return Response(data=data, status=status.HTTP_200_OK)        
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class IsSolutionAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, id):
+        try:
+            answer = Answer.objects.get(id=id)
+        except Answer.DoesNotExist:
+            raise AnswerNotFound    
+
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+
+        if answer.question.author != user_profile:
+            raise PermissionDenied
+
+        data = request.data
+
+        if data["is_solution"] == "True" and not answer.question.solved_status:
+            answer.question.solved_status = True
+            answer.question.save()
+        elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(id=id):
+            answer.question.solved_status = False
+            answer.question.save()
+    
+        serializer = UpdateIsSolutionSerializer(instance=answer, data=data, partial=True)
+
+        serializer.is_valid()
+        serializer.save()
+
+        return Response(serializer.errors, status=status.HTTP_200_OK)

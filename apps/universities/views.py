@@ -1,6 +1,9 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+import django_filters
+from django_filters.rest_framework import DjangoFilterBackend
 
 import logging
 
@@ -12,10 +15,46 @@ from .exceptions import UniversityNotFound
 logger = logging.getLogger(__name__)
 
 
+class UniversitiesFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(
+        field_name="name", lookup_expr="contains"
+    )
+    country = django_filters.CharFilter(
+        field_name="country", lookup_expr="contains"
+    )
+    city = django_filters.CharFilter(
+        field_name="city", lookup_expr="contains"
+    )
+    num_students_registered_gte = django_filters.NumberFilter(
+        field_name="num_students_registered", lookup_expr="gte"
+    )
+    num_students_registered_lte = django_filters.NumberFilter(
+        field_name="num_students_registered", lookup_expr="lte"
+    )
+    num_teachers_registered_gte = django_filters.NumberFilter(
+        field_name="num_teachers_registered", lookup_expr="gte"
+    )
+    num_teachers_registered_lte = django_filters.NumberFilter(
+        field_name="num_teachers_registered", lookup_expr="lte"
+    )
+    activity_lvl_gte = django_filters.NumberFilter(
+        field_name="activity_lvl", lookup_expr="gte"
+    )
+    activity_lvl_lte = django_filters.NumberFilter(
+        field_name="activity_lvl", lookup_expr="lte"
+    )
+
+
 class UniversitiesListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
     queryset = University.objects.all()
     serializer_class = UniversitySerializer
+    filter_backends = [
+        DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
+    ]
+    filterset_class = UniversitiesFilter
+
+    search_fields = ["name", "short_name"]
+    ordering_fields = ["activity_lvl", "international_ranking", "local_ranking"]
 
 
 class UniversityAPIView(APIView):
@@ -28,21 +67,6 @@ class UniversityAPIView(APIView):
             raise UniversityNotFound
         
         serializer = UniversitySerializer(university, context={"request":request})
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-
-class MostActiveUniversitiesAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        try:
-            most_active_universities = University.objects.order_by("activity_lvl" ,"num_students_registered",
-                "num_teachers_registered", "international_ranking","local_ranking")[:5]
-        except University.DoesNotExist:
-            raise UniversityNotFound
-        
-        serializer = UniversitySerializer(most_active_universities, context={"request":request}, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 
 from apps.profiles.models import Profile
+from apps.common.models import TimeStampedUUIDModel
 
 
 class Question(models.Model):
@@ -37,3 +38,16 @@ class Question(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+class QuestionViews(TimeStampedUUIDModel):
+    ip = models.CharField(verbose_name=_("IP Address"), max_length=255)
+    question = models.ForeignKey(Question, related_name="question_views",
+                                 on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"Total views on - {self.question.title} is {self.question.num_views} view(s)"
+    
+    class Meta:
+        verbose_name = _("Total views")
+        verbose_name_plural = _("Total views")

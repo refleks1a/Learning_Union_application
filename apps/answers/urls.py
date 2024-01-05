@@ -4,7 +4,7 @@ from .views import (GetAnswerAPIView, GetAnswersOnQuestionAPIView, CreteAnswerAP
                     GetUsersAnswersAPIView, UpdateAnswerAPIView, DeleteAnswerAPIView, IsSolutionAPIView)
 
 urlpatterns = [
-    path("question/<int:id>/", GetAnswersOnQuestionAPIView.as_view(), name="answers-on-question"),
+    path("question/", GetAnswersOnQuestionAPIView.as_view(), name="answers-on-question"),
     path("answer/<int:id>/", GetAnswerAPIView.as_view(), name="answer"),
     path("my/", GetUsersAnswersAPIView.as_view(), name="my-answers"),
     path("update/<int:id>/", UpdateAnswerAPIView.as_view(), name="update-answer"),
