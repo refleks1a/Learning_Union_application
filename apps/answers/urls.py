@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import (GetAnswerAPIView, GetAnswersOnQuestionAPIView, CreteAnswerAPIView,
+from .views import (GetAnswerAPIView, GetAnswersOnQuestionAPIView, CreteAnswerAPIView, UploadAnswerImage,
                     GetUsersAnswersAPIView, UpdateAnswerAPIView, DeleteAnswerAPIView, IsSolutionAPIView)
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path("create/<int:id>/", CreteAnswerAPIView.as_view(), name="create-answer"),
     path("delete/<int:id>/", DeleteAnswerAPIView.as_view(), name="delete-answer"),
     path("is-solution/<int:id>/", IsSolutionAPIView.as_view(), name="is-solution"),
+    path("answer/upload-image/", UploadAnswerImage, name="upload-image"),
 ]

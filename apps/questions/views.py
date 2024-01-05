@@ -187,10 +187,17 @@ class DeleteQuestionAPIView(APIView):
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
 def UploadQuestionImage(request):
-    data = request.data
+    if not request.FILES.get("image_1") and not request.FILES.get("image_2") and not request.FILES.get("image_3"):
+        return Response("No images has been sent.", status=status.HTTP_400_BAD_REQUEST)
 
+    data = request.data
     user_profile = Profile.objects.get(user=request.user)
-    question_id = data["question_id"]
+    
+    try:
+        question_id = data["question_id"]
+    except KeyError:    
+        return Response("The request is missing question_id", status=status.HTTP_400_BAD_REQUEST)
+
     try:
         question = Question.objects.get(id=question_id)
     except Question.DoesNotExist:

@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
 
 import logging
 
@@ -214,3 +215,36 @@ class IsSolutionAPIView(APIView):
         serializer.save()
 
         return Response(serializer.errors, status=status.HTTP_200_OK)
+    
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def UploadAnswerImage(request):
+    if not request.FILES.get("image_1") and not request.FILES.get("image_2") and not request.FILES.get("image_3"):
+        return Response("No images has been sent.", status=status.HTTP_400_BAD_REQUEST)
+
+    data = request.data
+    user_profile = Profile.objects.get(user=request.user)
+    
+    try:
+        answer_id = data["answer_id"]
+    except KeyError:    
+        return Response("The request is missing answer_id", status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        answer = Answer.objects.get(id=answer_id)
+    except Answer.DoesNotExist:
+        raise AnswerNotFound    
+
+    if answer.author != user_profile:
+        raise NotYourAnswer
+    
+    if request.FILES.get("image_1"):
+        answer.image_1 = request.FILES.get("image_1")
+    if request.FILES.get("image_2"):
+        answer.image_2 = request.FILES.get("image_2") 
+    if request.FILES.get("image_3"):
+        answer.image_3 = request.FILES.get("image_3") 
+    answer.save()        
+
+    return Response("Image(s) uploaded!", status=status.HTTP_200_OK)
