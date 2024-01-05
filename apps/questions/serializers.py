@@ -28,7 +28,8 @@ class UpdateQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ["title", "short_description", "details",
-                 "subject", "image_1", "image_2", "image_3"]
+                 "subject", "image_1", "image_2",
+                 "image_3", "solved_status"]
 
 
     def to_representation(self, instance):

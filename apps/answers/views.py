@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 import logging
 
 from .models import Answer
-from .serializers import AnswerSerializer, UpdateAnswerSerializer, CreateAnswerSerializer
-from .exceptions import AnswerNotFound, NotYourAnswer
+from .serializers import AnswerSerializer, UpdateAnswerSerializer, CreateAnswerSerializer, UpdateIsSolutionSerializer
+from .exceptions import AnswerNotFound, NotYourAnswer, PermissionDenied
 
 from apps.questions.models import Question
 from apps.questions.exceptions import QuestionNotFound
@@ -103,7 +103,39 @@ class UpdateAnswerAPIView(APIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class IsSolutionAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request, id):
+        try:
+            answer = Answer.objects.get(id=id)
+        except Answer.DoesNotExist:
+            raise AnswerNotFound    
+
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+
+        if answer.question.author != user_profile:
+            raise PermissionDenied
+
+        data = request.data
+
+        if data["is_solution"] == "True" and not answer.question.solved_status:
+            answer.question.solved_status = True
+            answer.question.save()
+        elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(id=id):
+            answer.question.solved_status = False
+            answer.question.save()
     
+        serializer = UpdateIsSolutionSerializer(instance=answer, data=data, partial=True)
+
+        serializer.is_valid()
+        serializer.save()
+
+        return Response(serializer.errors, status=status.HTTP_200_OK)
+
 
 class CreteAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

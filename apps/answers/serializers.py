@@ -53,6 +53,13 @@ class UpdateAnswerSerializer(serializers.ModelSerializer):
         return representation     
     
 
+class UpdateIsSolutionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer
+        fields = ["is_solution"]
+
+
 class CreateAnswerSerializer(serializers.ModelSerializer):
 
         class Meta:

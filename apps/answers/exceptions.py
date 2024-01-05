@@ -9,3 +9,8 @@ class AnswerNotFound(APIException):
 class NotYourAnswer(APIException):
     status_code = 403
     default_detail = "The requested answer doesn't belong to you"
+
+
+class PermissionDenied(APIException):
+    status_code = 403
+    default_detail = "Permission denied"
