@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import (GetQuestionAPIView, GetQuestionsListAPIView, UploadQuestionImage,
-                    CreateQuestionAPIView, GetUsersQuestionsAPIView,
+                    CreateQuestionAPIView, GetUsersQuestionsAPIView, DeleteQuestionImageAPIView,
                     UpdateQuestionAPIView, DeleteQuestionAPIView)
 
 
@@ -13,4 +13,5 @@ urlpatterns = [
     path("create/", CreateQuestionAPIView.as_view(), name="create-question"),
     path("question/<int:id>/", GetQuestionAPIView.as_view(), name="question"),
     path("question/upload-image/", UploadQuestionImage, name="upload-image"),
+    path("question/delete-image/", DeleteQuestionImageAPIView.as_view(), name="delete-image"),
 ]

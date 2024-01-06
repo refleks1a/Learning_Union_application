@@ -13,7 +13,7 @@ from .serializers import QuestionSerializer, UpdateQuestionSerializer, CreateQue
 
 from apps.profiles.models import Profile
 
-from .exceptions import NotYourQuestion, QuestionNotFound
+from .exceptions import NotYourQuestion, QuestionNotFound, MissingID, MissingImageNum, MissingQuestionID
 
 
 logger = logging.getLogger(__name__)
@@ -196,7 +196,7 @@ def UploadQuestionImage(request):
     try:
         question_id = data["question_id"]
     except KeyError:    
-        return Response("The request is missing question_id", status=status.HTTP_400_BAD_REQUEST)
+        raise MissingQuestionID
 
     try:
         question = Question.objects.get(id=question_id)
@@ -215,3 +215,47 @@ def UploadQuestionImage(request):
     question.save()        
 
     return Response("Image(s) uploaded!", status=status.HTTP_200_OK)  
+
+
+class DeleteQuestionImageAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request):
+        data = request.data
+        
+        try:
+            id = data["id"]
+            question = Question.objects.get(id=id)
+        except Question.DoesNotExist:
+            raise QuestionNotFound
+        except KeyError:
+            raise MissingID
+
+        try:
+            image_num = data["image_num"]
+        except KeyError:
+            raise MissingImageNum
+        
+        user_profile = Profile.objects.get(user=request.user)
+        if question.author != user_profile:
+            raise NotYourQuestion
+        
+        deletion_status = False
+        if image_num == "1" and question.image_1:
+            question.image_1.delete()
+            deletion_status = True    
+        elif image_num == "2" and question.image_2:
+            question.image_2.delete()
+            deletion_status = True
+        elif image_num == "3" and question.image_3:
+            question.image_3.delete()   
+            deletion_status = True
+        elif (image_num == "1" and not question.image_1) or (image_num == "2" and not question.image_2) or (image_num == "3" and not question.image_3):
+            return Response("There is no image to delete.", status=status.HTTP_400_BAD_REQUEST)
+        
+        question.save()
+
+        if deletion_status:
+            return Response("Image deletion was successful", status=status.HTTP_200_OK)     
+        return Response("Image deletion failed", status=status.HTTP_409_CONFLICT)
+            
