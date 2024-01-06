@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 
+from django.core.exceptions import ValidationError
+
 import logging
 
 import django_filters
@@ -43,17 +45,21 @@ class GetAnswersOnQuestionAPIView(generics.ListAPIView):
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
     ]
     filterset_class = AnswerFilter
-    search_fields = ["title", "description","author.user.username", 
+    search_fields = ["uid", "title", "description","author.user.username", 
                      "author.user.get_full_name"]
     ordering_fields = ["date_answered", "date_modified"]
     
     def get_queryset(self):
-        id = self.request.query_params.get('id')
-        print(id)
+        data = self.request.data
         try:
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
+        except ValidationError:
+            raise MissingID
+
+
         try:
             answers = Answer.objects.filter(question=question)
         except Answer.DoesNotExist:
@@ -70,7 +76,7 @@ class GetUsersAnswersAPIView(generics.ListAPIView):
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
     ]
     filterset_class = AnswerFilter
-    search_fields = ["title", "description"]
+    search_fields = ["uid", "title", "description"]
     ordering_fields = ["date_answered", "date_modified"]
 
     def get_queryset(self):
@@ -91,13 +97,16 @@ class GetUsersAnswersAPIView(generics.ListAPIView):
 class GetAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, id):
+    def get(self, request):
+        data = request.data
         try:
-            Answer.objects.get(id=id)
+            uid = data["uid"]
+            answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound 
+        except ValidationError:
+            return Response("Not valid uid")
 
-        answer = Answer.objects.get(id=id)
         serializer = AnswerSerializer(answer, context={"request": request})   
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -107,20 +116,24 @@ class UpdateAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdateAnswerSerializer
 
-    def patch(self, request, id):
+    def patch(self, request):
+        data = request.data
         try:
-            Answer.objects.get(id=id)
+            uid = data["uid"]
+            answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound
+        except ValidationError:
+            return Response("Not valid uid")
 
         user = request.user
         author = Profile.objects.get(user=user)
 
-        if Answer.objects.get(id=id).author != author:
+        if answer.author != author:
             raise NotYourAnswer
         
         data = request.data
-        serializer = UpdateAnswerSerializer(instance=Answer.objects.get(id=id), data=data, partial=True)
+        serializer = UpdateAnswerSerializer(instance=answer, data=data, partial=True)
 
         serializer.is_valid()
         serializer.save()
@@ -131,16 +144,20 @@ class UpdateAnswerAPIView(APIView):
 class CreteAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def post(self, request, id):
+    def post(self, request):
         user = request.user
         user_profile = Profile.objects.get(user=user)
+        data = request.data
         
         try:
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
-            raise QuestionNotFound    
+            raise QuestionNotFound  
+        except ValidationError:
+            return Response("Not valid uid")
+  
 
-        data = request.data
         data._mutable = True
         data["author"] = user_profile.pkid
         data["question"] = question.pk
@@ -160,11 +177,16 @@ class CreteAnswerAPIView(APIView):
 class DeleteAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, id):
+    def delete(self, request):
+        data = request.data
+
         try:
-            answer = Answer.objects.get(id=id)
+            uid = data["uid"]
+            answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound
+        except ValidationError:
+            return Response("Not valid uid")
 
         user = request.user
         user_profile = Profile.objects.get(user=user)
@@ -188,11 +210,16 @@ class DeleteAnswerAPIView(APIView):
 class IsSolutionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def patch(self, request, id):
+    def patch(self, request):
+        data = request.data
+
         try:
-            answer = Answer.objects.get(id=id)
+            uid = data["uid"]
+            answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
-            raise AnswerNotFound    
+            raise AnswerNotFound  
+        except ValidationError:
+            return Response("Not valid uid")  
 
         user = request.user
         user_profile = Profile.objects.get(user=user)
@@ -205,7 +232,7 @@ class IsSolutionAPIView(APIView):
         if data["is_solution"] == "True" and not answer.question.solved_status:
             answer.question.solved_status = True
             answer.question.save()
-        elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(id=id):
+        elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(uid=uid):
             answer.question.solved_status = False
             answer.question.save()
     
@@ -227,12 +254,14 @@ def UploadAnswerImage(request):
     user_profile = Profile.objects.get(user=request.user)
     
     try:
-        answer_id = data["answer_id"]
+        answer_uid = data["uid"]
     except KeyError:    
         raise MissingAnswerID
+    except ValidationError:
+            return Response("Not valid uid")
 
     try:
-        answer = Answer.objects.get(id=answer_id)
+        answer = Answer.objects.get(uid=answer_uid)
     except Answer.DoesNotExist:
         raise AnswerNotFound    
 
@@ -257,12 +286,14 @@ class DeleteAnswerImageAPIView(APIView):
         data = request.data
         
         try:
-            id = data["id"]
-            answer = Answer.objects.get(id=id)
+            uid = data["uid"]
+            answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound
         except KeyError:
             raise MissingID
+        except ValidationError:
+            return Response("Not valid uid")
 
         try:
             image_num = data["image_num"]

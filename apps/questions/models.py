@@ -1,4 +1,6 @@
 from django.db import models
+import uuid
+
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 
@@ -7,6 +9,8 @@ from apps.common.models import TimeStampedUUIDModel
 
 
 class Question(models.Model):
+
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
     title = models.CharField(verbose_name=_("Title of the question"), max_length=63)
     short_description = models.CharField(verbose_name=_("Brief description of the question"), max_length=127)

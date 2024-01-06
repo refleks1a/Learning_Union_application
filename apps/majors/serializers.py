@@ -6,7 +6,7 @@ from .models import Major
 class MajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
-        fields = ["name", "num_students"]
+        fields = ["id", "uid","name", "num_students"]
 
 
 class CreateMajorSerializer(serializers.ModelSerializer):
@@ -14,3 +14,10 @@ class CreateMajorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Major
         fields = ["name"]
+
+
+class UpdateMajorSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Major
+        exclude = ["id", "uid"]

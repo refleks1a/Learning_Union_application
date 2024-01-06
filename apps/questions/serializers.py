@@ -7,11 +7,11 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ["title", "short_description", "subject",
+        fields = ["uid", "title", "short_description", "subject",
                   "num_views", "num_answers", "date_asked",
                   "date_last_view", "solved_status", "is_active",
-                  "author", "image_1", "image_2", "image_3"]
-
+                  "image_1", "image_2", "image_3", "author"]
+        
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -27,8 +27,8 @@ class UpdateQuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ["title", "short_description", "details",
-                 "subject", "image_1", "image_2",
-                 "image_3", "solved_status"]
+                 "subject", "image_1", "image_2", "image_3",
+                 "solved_status", "is_active"]
 
 
     def to_representation(self, instance):
@@ -44,10 +44,9 @@ class CreateQuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        exclude = ["num_views", "num_answers", "date_asked",
-                   "date_modified", "date_last_view", 
-                   "solved_status", "is_active"]
-        
+        exclude = ["id", "uid", "num_views", "num_answers",
+                   "is_active", "solved_status"]
+    
 
 class QuestionViewsSerializer(serializers.ModelSerializer):
 

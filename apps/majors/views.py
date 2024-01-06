@@ -2,10 +2,11 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django.core.exceptions import ValidationError
 import logging
 
 from .models import Major
-from .serializers import MajorSerializer, CreateMajorSerializer
+from .serializers import MajorSerializer, CreateMajorSerializer, UpdateMajorSerializer
 from .exceptions import MajorNotFound
 
 
@@ -21,11 +22,15 @@ class MajorsListAPIView(generics.ListAPIView):
 class MajorAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, name):
+    def get(self, request):
+        data = request.data
         try:
-            major = Major.objects.get(name=name)
+            uid = data["uid"]
+            major = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
 
         serializer = MajorSerializer(major, context={"request":request}) 
 
@@ -54,16 +59,20 @@ class CreateMajorAPIView(APIView):
 class UpdateMajorAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def patch(self, request, name):
+    def patch(self, request):
+        data = request.data
         try:
-            major = Major.objects.get(name=name)
+            uid = data["uid"]
+            major = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
 
         data = request.data
-        serializer = CreateMajorSerializer(instance=major, data=data, partial=True)
+        serializer = UpdateMajorSerializer(instance=major, data=data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -77,11 +86,15 @@ class UpdateMajorAPIView(APIView):
 class DeleteMajorAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def delete(self, request, name):
+    def delete(self, request):
+        data = request.data
         try:
-            university = Major.objects.get(name=name)
+            uid = data["uid"]
+            university = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
         

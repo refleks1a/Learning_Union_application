@@ -14,9 +14,9 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ["question", "title", "description", "date_answered",
+        fields = ["uid", "title", "description", "date_answered",
                   "username", "email", "full_name", "image_1",
-                  "image_2", "image_3"]
+                  "image_2", "image_3", "question"]
         
         
     def get_full_name(self, obj):
@@ -40,8 +40,8 @@ class UpdateAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer  
-        fields = ["title", "description", "image_1",
-                  "image_2", "image_3"]
+        fields = ["uid", "title", "description", "date_answered",
+                 "image_1", "image_2", "image_3", "question"]
 
 
     def to_representation(self, instance):
@@ -64,4 +64,4 @@ class CreateAnswerSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = Answer
-            exclude = ["date_answered", "date_modified", "is_solution"]
+            exclude = ["id"]

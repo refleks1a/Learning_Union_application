@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.exceptions import ValidationError
 
 import logging
 
@@ -53,18 +54,22 @@ class UniversitiesListAPIView(generics.ListAPIView):
     ]
     filterset_class = UniversitiesFilter
 
-    search_fields = ["name", "short_name"]
+    search_fields = ["uid", "name", "short_name"]
     ordering_fields = ["activity_lvl", "international_ranking", "local_ranking"]
 
 
 class UniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, name):
+    def get(self, request):
+        data = request.data
         try:
-            university =  University.objects.get(name=name)
+            uid = data["uid"]
+            university =  University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
         
         serializer = UniversitySerializer(university, context={"request":request})
 
@@ -81,6 +86,7 @@ class CreateUniversityAPIView(APIView):
         data._mutable = True
         data["is_active"] = True
         data._mutable = False
+        
 
         serializer = CreateUniversitySerializer(data=data)
 
@@ -96,11 +102,15 @@ class CreateUniversityAPIView(APIView):
 class UpdateUniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def patch(self, request, name):
+    def patch(self, request):
+        data = request.data
         try:
-            university = University.objects.get(name=name)
+            uid = data["uid"]
+            university = University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
 
@@ -119,11 +129,15 @@ class UpdateUniversityAPIView(APIView):
 class DeleteUniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def delete(self, request, name):
+    def delete(self, request):
+        data = request.data
         try:
-            university = University.objects.get(name=name)
+            uid = data["uid"]
+            university = University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
+        except ValidationError:
+            return Response("Not valid uid", status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
         

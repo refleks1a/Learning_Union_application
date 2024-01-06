@@ -3,7 +3,7 @@ from .models import Question, QuestionViews
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ["id", "title", "short_description", "subject", "author",
+    list_display = ["id","uid", "title", "short_description", "subject", "author",
                     "num_views", "num_answers", "date_asked", "date_last_view",
                     "solved_status", "is_active"]
     
@@ -11,7 +11,7 @@ class QuestionAdmin(admin.ModelAdmin):
                    "date_asked", "date_last_view",
                    "solved_status", "is_active"]
     
-    list_display_links = ["id", "title"]
+    list_display_links = ["id", "uid", "title"]
 
 
 admin.site.register(Question, QuestionAdmin)   

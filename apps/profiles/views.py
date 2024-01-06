@@ -73,8 +73,10 @@ class UpdateProfileAPIView(APIView):
     serializer_class = UpdateProfileSerializer
 
 
-    def patch(self, request, username):
+    def patch(self, request):
+        data = request.data
         try:
+            username = data["username"]
             Profile.objects.get(user__username=username)
         except Profile.DoesNotExist:
             raise ProfileNotFound

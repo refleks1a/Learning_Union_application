@@ -1,14 +1,18 @@
 from django.db import models
 from django.utils.timezone import now
+import uuid
 
 from apps.profiles.models import Profile
 from apps.questions.models import Question
+from apps.common.models import TimeStampedUUIDModel
 
 from django.utils.translation import gettext_lazy as _
 
 
 class Answer(models.Model):
 
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    
     author = models.ForeignKey(Profile, verbose_name=_("An author of the answer"), on_delete=models.SET_NULL,
                                null=True)
     question = models.ForeignKey(Question, verbose_name=_("The question that is being answered"), 

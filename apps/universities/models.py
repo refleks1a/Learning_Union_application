@@ -1,5 +1,9 @@
 from django.db import models
+import uuid
+
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
+
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -16,6 +20,8 @@ class University(models.Model):
     class Meta:
         verbose_name = _("University")  
         verbose_name_plural = _("Universities")  
+
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)    
     
     name = models.CharField(verbose_name=_("University Name"), max_length=255)
     short_name = models.CharField(verbose_name=_("Sort name of the University(if exists)"), max_length=15,

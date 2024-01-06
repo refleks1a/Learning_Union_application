@@ -20,7 +20,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source="user.email")
     country = CountryField(name_only=True)
 
-    full_name = serializers.SerializerMethodField(read_only=True)
     
     questions = serializers.SerializerMethodField(read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
@@ -28,22 +27,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ["username", "first_name", "last_name", "fathers_name",
-                  "full_name", "email", "id", "phone_number",
+        fields = ["id", "username", "first_name", "last_name", 
+                  "fathers_name", "email", "id", "phone_number",
                   "profile_photo", "about_me","gender","country",
                   "city", "university", "major", "education_language", "year_of_study",
                   "degree_type", "is_student", "is_teacher", "is_other",
                   "answers", "questions", 
                   ]
         
-
-    def get_full_name(self, obj):    
-        first_name = obj.user.first_name.title()
-        last_name = obj.user.last_name.title()
-        fathers_name = obj.user.fathers_name.title()
-
-        return f"{first_name} {last_name} {fathers_name}"
-    
 
     def get_questions(self, obj):
         questions = Question.objects.filter(author=obj)
@@ -74,11 +65,11 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            "phone_number", "profile_photo", "about_me",
-            "gender", "country", "city", "top_helper",
-            "is_student", "is_teacher", "is_other",
-            "year_of_study", "degree_type", 
-            "university", "major", "education_language",
+            "id", "phone_number", "about_me", "profile_photo", 
+            "gender", "country", "city", "university", "major",
+            "year_of_study", "degree_type", "education_language", 
+            "is_student", "is_teacher", "is_other", 
+            "top_helper", "rating", "num_reviews",
         ]
     
     

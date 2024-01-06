@@ -6,6 +6,8 @@ from rest_framework.decorators import api_view, permission_classes
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 
+from django.core.exceptions import ValidationError
+
 import logging
 
 from .models import Question, QuestionViews
@@ -65,7 +67,7 @@ class GetUsersQuestionsAPIView(generics.ListAPIView):
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
     ]
     filterset_class = QuestionFilter
-    search_fields = ["title", "subject"]
+    search_fields = ["title", "subject", "uid"]
     ordering_fields = ["date_asked", "num_views", "num_answers"]
 
     def get_queryset(self):
@@ -85,11 +87,16 @@ class QuestionViewsAPIView(APIView):
 class GetQuestionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, id):
+    def get(self, request):
+        data = request.data
         try:
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist: 
             raise QuestionNotFound   
+        except ValidationError:
+            return Response("Not valid uid")
+
         
         x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
@@ -112,11 +119,15 @@ class UpdateQuestionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdateQuestionSerializer
 
-    def patch(self, request, id):
+    def patch(self, request):
+        data = request.data
         try:
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
+        except ValidationError:
+            return Response("Not valid uid")
 
         user = request.user
         author = Profile.objects.get(user=user)
@@ -159,11 +170,15 @@ class CreateQuestionAPIView(APIView):
 class DeleteQuestionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request, id):
+    def delete(self, request):
+        data = request.data
         try:
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
+        except ValidationError:
+            return Response("Not valid uid")
 
         user = request.user
         user_profile = Profile.objects.get(user=user)
@@ -194,12 +209,14 @@ def UploadQuestionImage(request):
     user_profile = Profile.objects.get(user=request.user)
     
     try:
-        question_id = data["question_id"]
+        uid = data["uid"]
     except KeyError:    
         raise MissingQuestionID
+    except ValidationError:
+            return Response("Not valid uid")
 
     try:
-        question = Question.objects.get(id=question_id)
+        question = Question.objects.get(uid=uid)
     except Question.DoesNotExist:
         raise QuestionNotFound    
 
@@ -224,12 +241,14 @@ class DeleteQuestionImageAPIView(APIView):
         data = request.data
         
         try:
-            id = data["id"]
-            question = Question.objects.get(id=id)
+            uid = data["uid"]
+            question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
         except KeyError:
             raise MissingID
+        except ValidationError:
+            return Response("Not valid uid")
 
         try:
             image_num = data["image_num"]
