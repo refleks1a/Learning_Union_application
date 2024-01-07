@@ -9,6 +9,7 @@ import logging
 
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.timezone import now
 
 from .models import Answer
 from .serializers import AnswerSerializer, UpdateAnswerSerializer, CreateAnswerSerializer, UpdateIsSolutionSerializer
@@ -133,6 +134,9 @@ class UpdateAnswerAPIView(APIView):
             raise NotYourAnswer
         
         data = request.data
+        answer.date_modified = now()
+        answer.save()
+
         serializer = UpdateAnswerSerializer(instance=answer, data=data, partial=True)
 
         serializer.is_valid()
@@ -161,12 +165,20 @@ class CreteAnswerAPIView(APIView):
         data._mutable = True
         data["author"] = user_profile.pkid
         data["question"] = question.pk
+        data["date_answered"] = now()
         data._mutable = False
 
         serializer = CreateAnswerSerializer(data=data)
 
         if serializer.is_valid():
             serializer.save()
+
+            question.num_answers += 1
+            question.save() 
+
+            user_profile.num_reviews += 1
+            user_profile.save()
+
             logger.info(f"question {serializer.data.get('title')} created by {user.username}")
 
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -199,6 +211,12 @@ class DeleteAnswerAPIView(APIView):
             data = {}
             if delete_operation:
                 data["deletion"] = "Deletion was successful"
+
+                answer.question.num_answers -= 1
+                answer.question.save()
+
+                user_profile.num_reviews -= 1
+                user_profile.save()
             else:
                 data["deletion"] = "Deletion was not successful"
 

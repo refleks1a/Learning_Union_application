@@ -8,7 +8,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ["uid", "title", "short_description", "subject",
-                  "num_views", "num_answers", "date_asked",
+                  "num_views", "num_answers", "date_asked","date_modified",
                   "date_last_view", "solved_status", "is_active",
                   "image_1", "image_2", "image_3", "author"]
         

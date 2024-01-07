@@ -65,11 +65,10 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = [
-            "id", "phone_number", "about_me", "profile_photo", 
+            "phone_number", "about_me", "profile_photo", 
             "gender", "country", "city", "university", "major",
             "year_of_study", "degree_type", "education_language", 
-            "is_student", "is_teacher", "is_other", 
-            "top_helper", "rating", "num_reviews",
+            "is_student", "is_teacher", "is_other"
         ]
     
     

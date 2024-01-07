@@ -14,7 +14,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        fields = ["uid", "title", "description", "date_answered",
+        fields = ["uid", "title", "description", "date_answered", "date_modified",
                   "username", "email", "full_name", "image_1",
                   "image_2", "image_3", "question"]
         
@@ -41,7 +41,7 @@ class UpdateAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer  
         fields = ["uid", "title", "description", "date_answered",
-                 "image_1", "image_2", "image_3", "question"]
+                 "date_modified", "image_1", "image_2", "image_3", "question"]
 
 
     def to_representation(self, instance):

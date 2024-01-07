@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
 from .renderers import ProfileJSONRenderer
@@ -68,16 +70,17 @@ class GetProfileAPIView(APIView):
 
 class UpdateProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [ProfileJSONRenderer] 
+    # renderer_classes = [ProfileJSONRenderer] 
 
     serializer_class = UpdateProfileSerializer
 
 
     def patch(self, request):
         data = request.data
+
         try:
             username = data["username"]
-            Profile.objects.get(user__username=username)
+            profile = Profile.objects.get(user__username=username)
         except Profile.DoesNotExist:
             raise ProfileNotFound
         
@@ -85,11 +88,47 @@ class UpdateProfileAPIView(APIView):
 
         if user_name != username:
             raise NotYourProfile
-        
-        data = request.data
-        serializer = UpdateProfileSerializer(instance=request.user.profile, data=data, partial=True)
 
-        serializer.is_valid()
-        serializer.save()
+        try:
+            if profile.is_student and data["is_teacher"] == "True":
+                data._mutable = True
+                data["is_teacher"] = "False"
+                data._mutable = False
+            elif profile.is_teacher and data["is_student"] == "True":
+                data._mutable = True
+                data["is_student"] = "False"
+                data._mutable = False
+            elif data["is_student"] == "True" and data["is_teacher"] == "True":
+                data._mutable = True
+                data["is_teacher"] = "False"
+                data["is_student"] = "False"
+                data._mutable = False
+        except MultiValueDictKeyError: 
+            pass
+
+        try:
+            if not profile.is_student and data["is_student"] == "True":
+                profile.university.num_students_registered += 1
+            elif profile.is_student and data["is_student"] == "False" and profile.university.num_students_registered>=1:
+                profile.university.num_students_registered -= 1
+        except MultiValueDictKeyError:   
+            pass     
+
+        try:
+            if not profile.is_teacher and data["is_teacher"] == "True":
+                profile.university.num_teachers_registered += 1
+            elif profile.is_teacher and data["is_teacher"] == "False" and profile.university.num_teachers_registered>=1:
+                profile.university.num_teachers_registered -= 1
+        except MultiValueDictKeyError:   
+            pass         
+
+        profile.university.save() 
+            
+        serializer = UpdateProfileSerializer(instance=profile, data=data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
         return Response(serializer.data, status=status.HTTP_200_OK)

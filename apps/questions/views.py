@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.timezone import now
 
 from django.core.exceptions import ValidationError
 
@@ -106,7 +107,7 @@ class GetQuestionAPIView(APIView):
 
         if not QuestionViews.objects.filter(question=question, ip=ip).exists():
             QuestionViews.objects.create(question=question, ip=ip)
-            
+            question.date_last_view = now()
             question.num_views += 1
             question.save()
 
@@ -136,6 +137,9 @@ class UpdateQuestionAPIView(APIView):
             raise NotYourQuestion
         
         data = request.data
+        data._mutable = True
+        data["date_modified"] = now()
+        data._mutable = False
         serializer = UpdateQuestionSerializer(instance=question, data=data, partial=True)
 
         serializer.is_valid()
@@ -154,6 +158,7 @@ class CreateQuestionAPIView(APIView):
         data = request.data
         data._mutable = True
         data["author"] = user_profile.pkid
+        data["date_asked"] = now()
         data._mutable = False
 
         serializer = CreateQuestionSerializer(data=data)
