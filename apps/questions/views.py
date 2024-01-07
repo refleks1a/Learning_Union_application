@@ -22,6 +22,7 @@ from .exceptions import NotYourQuestion, QuestionNotFound, MissingID, MissingIma
 logger = logging.getLogger(__name__)
 
 
+# Filters on Question model
 class QuestionFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(
         field_name="title", lookup_expr="icontains"
@@ -98,13 +99,14 @@ class GetQuestionAPIView(APIView):
         except ValidationError:
             return Response("Not valid uid")
 
-        
+        # Get the IP address of the user
         x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
         if x_forwarded_for:
             ip = x_forwarded_for.split(",")[0]
         else:
             ip = request.META.get("REMOTE_ADDR")
 
+        # If the user views the question for the first time create a question view
         if not QuestionViews.objects.filter(question=question, ip=ip).exists():
             QuestionViews.objects.create(question=question, ip=ip)
             question.date_last_view = now()
@@ -136,6 +138,7 @@ class UpdateQuestionAPIView(APIView):
         if question.author != author:
             raise NotYourQuestion
         
+        # Change the date of modification of the question
         data = request.data
         data._mutable = True
         data["date_modified"] = now()
@@ -228,6 +231,7 @@ def UploadQuestionImage(request):
     if question.author != user_profile:
         raise NotYourQuestion
     
+    # Check witch image is being loaded
     if request.FILES.get("image_1"):
         question.image_1 = request.FILES.get("image_1")
     if request.FILES.get("image_2"):
@@ -264,6 +268,7 @@ class DeleteQuestionImageAPIView(APIView):
         if question.author != user_profile:
             raise NotYourQuestion
         
+        # Check which image is being deleted
         deletion_status = False
         if image_num == "1" and question.image_1:
             question.image_1.delete()

@@ -13,6 +13,7 @@ from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
+#Filters on Profiles model
 class ProfilesFilter(django_filters.FilterSet):
     rating_gte = django_filters.NumberFilter(
         field_name="rating", lookup_expr="gte"
@@ -70,7 +71,7 @@ class GetProfileAPIView(APIView):
 
 class UpdateProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [ProfileJSONRenderer] 
+    renderer_classes = [ProfileJSONRenderer] 
 
     serializer_class = UpdateProfileSerializer
 
@@ -88,24 +89,19 @@ class UpdateProfileAPIView(APIView):
 
         if user_name != username:
             raise NotYourProfile
-
+        
+        # Make sure that the user is not a teacher and a student at the same day
         try:
-            if profile.is_student and data["is_teacher"] == "True":
-                data._mutable = True
-                data["is_teacher"] = "False"
-                data._mutable = False
-            elif profile.is_teacher and data["is_student"] == "True":
-                data._mutable = True
-                data["is_student"] = "False"
-                data._mutable = False
-            elif data["is_student"] == "True" and data["is_teacher"] == "True":
-                data._mutable = True
-                data["is_teacher"] = "False"
-                data["is_student"] = "False"
-                data._mutable = False
+            if ((profile.is_student and data["is_teacher"] == "True") or 
+            (profile.is_teacher and data["is_student"] == "True") or
+            (data["is_student"] == "True" and data["is_teacher"] == "True")):
+                formatted_message = {"message": "You cannot be a student and a teacher at the same time"} 
+                return Response(formatted_message, status=status.HTTP_400_BAD_REQUEST)
+    
         except MultiValueDictKeyError: 
             pass
 
+        # Increment/decrement the number of students/teachers     
         try:
             if not profile.is_student and data["is_student"] == "True":
                 profile.university.num_students_registered += 1

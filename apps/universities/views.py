@@ -16,6 +16,7 @@ from .exceptions import UniversityNotFound
 logger = logging.getLogger(__name__)
 
 
+# Filters on Universities model
 class UniversitiesFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(
         field_name="name", lookup_expr="contains"

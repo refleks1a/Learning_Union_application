@@ -4,6 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
 
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
+
+from learning_union.settings.development import DEFAULT_FROM_EMAIL
 
 import logging
 
@@ -24,7 +27,7 @@ from apps.profiles.exceptions import ProfileNotFound
 
 logger = logging.getLogger(__name__)
 
-
+# Filters of the Answer model
 class AnswerFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(
         field_name="title", lookup_expr="contains"
@@ -59,7 +62,6 @@ class GetAnswersOnQuestionAPIView(generics.ListAPIView):
             raise QuestionNotFound
         except ValidationError:
             raise MissingID
-
 
         try:
             answers = Answer.objects.filter(question=question)
@@ -181,6 +183,17 @@ class CreteAnswerAPIView(APIView):
 
             logger.info(f"question {serializer.data.get('title')} created by {user.username}")
 
+            # Sending email to the author of the question
+            subject = f"{user.username} has answered your question!"
+            message = f"{user.get_full_name} has answered your question with the title: {question.title}"
+            from_email = DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+
+            send_mail(
+                subject, message, from_email,
+                recipient_list, fail_silently=True
+            )
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -212,9 +225,11 @@ class DeleteAnswerAPIView(APIView):
             if delete_operation:
                 data["deletion"] = "Deletion was successful"
 
+                # Decrement the number of answers on the question
                 answer.question.num_answers -= 1
                 answer.question.save()
 
+                # Increment the number of answers on the question
                 user_profile.num_reviews -= 1
                 user_profile.save()
             else:
@@ -247,9 +262,11 @@ class IsSolutionAPIView(APIView):
 
         data = request.data
 
+        # If the answer is the solution then question is marked as solved
         if data["is_solution"] == "True" and not answer.question.solved_status:
             answer.question.solved_status = True
             answer.question.save()
+        # If the answer is not the solution then question is marked as not solved    
         elif data["is_solution"] == "False" and not Answer.objects.filter(is_solution=True).exclude(uid=uid):
             answer.question.solved_status = False
             answer.question.save()
@@ -265,6 +282,7 @@ class IsSolutionAPIView(APIView):
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
 def UploadAnswerImage(request):
+    # Check that at least is uploaded
     if not request.FILES.get("image_1") and not request.FILES.get("image_2") and not request.FILES.get("image_3"):
         return Response("No images has been sent.", status=status.HTTP_400_BAD_REQUEST)
 
@@ -285,7 +303,8 @@ def UploadAnswerImage(request):
 
     if answer.author != user_profile:
         raise NotYourAnswer
-    
+        
+    # Check what image is being uploaded    
     if request.FILES.get("image_1"):
         answer.image_1 = request.FILES.get("image_1")
     if request.FILES.get("image_2"):
@@ -323,6 +342,8 @@ class DeleteAnswerImageAPIView(APIView):
             raise NotYourAnswer
         
         deletion_status = False
+        
+        # Check which image is being deleted
         if image_num == "1" and answer.image_1:
             answer.image_1.delete()
             deletion_status = True    
