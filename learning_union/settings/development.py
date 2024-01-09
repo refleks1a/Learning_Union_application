@@ -11,7 +11,6 @@ DEFAULT_FROM_EMAIL = "info@learning-union.com"
 DOMAIN = env("DOMAIN")
 SITE_NAME = "Learning Union"
 
-
 DATABASES = {
     'default': {
         'ENGINE': env("MYSQL_ENGINE"),
@@ -20,8 +19,5 @@ DATABASES = {
         'PASSWORD': env("MYSQL_PASSWORD"),
         'HOST': env("MYSQL_HOST"),
         'PORT': env("MYSQL_PORT"),
-        'OPTIONS': {  
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
-        },
     }
 }
