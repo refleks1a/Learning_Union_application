@@ -12,3 +12,7 @@ djoser==2.2.2
 djangorestframework-simplejwt==5.3.1
 PyJWT==2.8.0
 gunicorn==21.2.0
+pytest-django==4.7.0
+pytest-factoryboy==2.6.0
+Faker==21.0.0
+pytest-cov==4.1.0
