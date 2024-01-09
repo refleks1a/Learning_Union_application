@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+
+set -o nounset
+
+watchmedo auto-restart -d learning_union/ -p "*.py" -- celery -A learning_union worker --loglevel=info

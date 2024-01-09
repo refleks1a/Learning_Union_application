@@ -12,8 +12,44 @@ services:
       - media_volume:/app/mediafiles/
     depends_on:
       - db  
+      - redis
     env_file:
       - .env
+    networks:
+      - lu-react    
+
+  redis:
+    image: redis
+    networks:
+      - lu-react
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./docker/local/django/Dockerfile
+    command: /start-celeryworker
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - db
+    networks:
+      - lu-react
+
+  flower:
+    image: mher/flower:0.9.7
+    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - "5557:5555"
+    depends_on:
+      - redis
+      - db
     networks:
       - lu-react    
 
