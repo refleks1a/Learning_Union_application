@@ -15,7 +15,7 @@ urlpatterns = [
     path("api/v1/answers/", include("apps.answers.urls")),
     path("api/v1/universities/", include("apps.universities.urls")),
     path("api/v1/majors/", include("apps.majors.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
 
 
 admin.site.site_header = "Learning Union Admin"

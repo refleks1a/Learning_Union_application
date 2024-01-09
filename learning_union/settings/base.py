@@ -24,7 +24,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS").split(" ")
-
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
 
 # Application definition
 
@@ -60,7 +60,6 @@ LOCAL_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 SITE_ID = 1
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -128,7 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/staticfiles/"
-STATIC_ROOT = BASE_DIR / "/staticfiles/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/mediafiles/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
