@@ -18,7 +18,18 @@ services:
     env_file:
       - .env
     networks:
-      - lu-react    
+      - lu-react   
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./docker/local/Dockerfile
+    restart: on-failure
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - lu-react  
 
   redis:
     image: redis
@@ -43,6 +54,7 @@ services:
   flower:
     image: mher/flower:0.9.7
     command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    platform: linux/amd64
     volumes:
       - .:/app
     env_file:
@@ -78,7 +90,7 @@ services:
     ports:
         - "8080:80"
     networks:
-        - lu-react    
+        - lu-react          
 
 networks:
   lu-react:
