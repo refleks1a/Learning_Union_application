@@ -4,6 +4,9 @@ from .models import Question, QuestionViews
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    image_1 = serializers.SerializerMethodField()
+    image_2 = serializers.SerializerMethodField()
+    image_3 = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
@@ -12,6 +15,20 @@ class QuestionSerializer(serializers.ModelSerializer):
                   "date_last_view", "solved_status", "is_active",
                   "image_1", "image_2", "image_3", "author"]
         
+    def get_image_1(self, obj):
+        if obj.image_1:
+            return obj.image_1.url
+        return None
+    
+    def get_image_2(self, obj):
+        if obj.image_2:
+            return obj.image_2.url
+        return None
+    
+    def get_image_3(self, obj):
+        if obj.image_3:
+            return obj.image_3.url
+        return None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -23,13 +40,30 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class UpdateQuestionSerializer(serializers.ModelSerializer):
-   
+    image_1 = serializers.SerializerMethodField()
+    image_2 = serializers.SerializerMethodField()
+    image_3 = serializers.SerializerMethodField()
+
     class Meta:
         model = Question
         fields = ["title", "short_description", "details",
                  "subject", "image_1", "image_2", "image_3",
                  "solved_status", "is_active"]
 
+    def get_image_1(self, obj):
+        if obj.image_1:
+            return obj.image_1.url
+        return None
+    
+    def get_image_2(self, obj):
+        if obj.image_2:
+            return obj.image_2.url
+        return None
+    
+    def get_image_3(self, obj):
+        if obj.image_3:
+            return obj.image_3.url
+        return None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

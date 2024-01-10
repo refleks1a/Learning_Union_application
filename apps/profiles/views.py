@@ -103,22 +103,25 @@ class UpdateProfileAPIView(APIView):
 
         # Increment/decrement the number of students/teachers     
         try:
-            if not profile.is_student and data["is_student"] == "True":
+            if not profile.is_student and data["is_student"] == "True" and profile.university:
                 profile.university.num_students_registered += 1
-            elif profile.is_student and data["is_student"] == "False" and profile.university.num_students_registered>=1:
-                profile.university.num_students_registered -= 1
+            elif profile.is_student and data["is_student"] == "False" and profile.university:
+                if profile.university.num_students_registered>=1:
+                    profile.university.num_students_registered -= 1
         except MultiValueDictKeyError:   
             pass     
 
         try:
-            if not profile.is_teacher and data["is_teacher"] == "True":
+            if not profile.is_teacher and data["is_teacher"] == "True" and profile.university:
                 profile.university.num_teachers_registered += 1
-            elif profile.is_teacher and data["is_teacher"] == "False" and profile.university.num_teachers_registered>=1:
-                profile.university.num_teachers_registered -= 1
+            elif profile.is_teacher and data["is_teacher"] == "False" and profile.university:
+                if profile.university.num_teachers_registered>=1:
+                    profile.university.num_teachers_registered -= 1
         except MultiValueDictKeyError:   
             pass         
 
-        profile.university.save() 
+        if profile.university:
+            profile.university.save() 
             
         serializer = UpdateProfileSerializer(instance=profile, data=data, partial=True)
 
