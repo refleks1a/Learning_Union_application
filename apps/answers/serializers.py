@@ -12,6 +12,7 @@ class AnswerSerializer(serializers.ModelSerializer):
     image_1 = serializers.SerializerMethodField()
     image_2 = serializers.SerializerMethodField()
     image_3 = serializers.SerializerMethodField()
+    profile_photo = serializers.SerializerMethodField()
     full_name = serializers.SerializerMethodField(read_only=True)
 
 
@@ -36,6 +37,9 @@ class AnswerSerializer(serializers.ModelSerializer):
         if obj.image_3:
             return obj.image_3.url
         return None
+    
+    def get_profile_photo(self, obj):
+        return obj.author.profile_photo.url
 
     def get_full_name(self, obj):
         first_name = obj.author.user.first_name
@@ -43,6 +47,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         fathers_name = obj.author.user.fathers_name
 
         return f"{first_name} {last_name} {fathers_name}"
+    
     
 
     def to_representation(self, instance):
