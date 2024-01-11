@@ -22,13 +22,12 @@ const QuestionsPage = () => {
 		}
 		dispatch(getQuestions());
 	}, [dispatch, isError, message]);
-	
 	if (isLoading) {
 		return <Spinner />;
 	}
 	return (
 		<>
-			<Title title="Questions List" />
+			<Title title="Questions List"/>
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">

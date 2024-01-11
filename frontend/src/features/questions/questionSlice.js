@@ -44,7 +44,7 @@ export const questionSlice = createSlice({
 			.addCase(getQuestions.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.questions = action.payload;
+				state.questions = action.payload.results;
 			})
 			.addCase(getQuestions.rejected, (state, action) => {
 				state.isLoading = false;

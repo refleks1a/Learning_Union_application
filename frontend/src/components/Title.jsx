@@ -1,17 +1,20 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 
 const Title = ({ title, description, keywords }) => {
 	return (
-		<div>
-			
-		</div>
+		<Helmet>
+			<title>{title}</title>
+			<meta name="description" content={description} />
+			<meta name="keywords" content={keywords} />
+		</Helmet>
 	);
 };
 
 Title.defaultProps = {
-	title: "Welcome to Real Estate",
-	description: "We sell the best properties in town",
-	keywords: "land, real estate, best value",
+	title: "Welcome to Learning Union",
+	description: "We have answers which you are looking for",
+	keywords: "question, answer, university, student, teacher, universities",
 };
 
 export default Title;
