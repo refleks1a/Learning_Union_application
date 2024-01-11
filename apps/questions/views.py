@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 
 import logging
 
+from .pagination import QuestionPagination
 from .models import Question, QuestionViews
 from .serializers import QuestionSerializer, UpdateQuestionSerializer, CreateQuestionSerializer, QuestionViewsSerializer
 
@@ -53,6 +54,7 @@ class QuestionFilter(django_filters.FilterSet):
 class GetQuestionsListAPIView(generics.ListAPIView):
     queryset = Question.objects.all().order_by("-date_asked")
     serializer_class = QuestionSerializer
+    pagination_class = QuestionPagination
     filter_backends = [
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
     ]
@@ -87,7 +89,6 @@ class QuestionViewsAPIView(APIView):
 
 
 class GetQuestionAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         data = request.data
