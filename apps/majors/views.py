@@ -8,19 +8,19 @@ import logging
 from .models import Major
 from .serializers import MajorSerializer, CreateMajorSerializer, UpdateMajorSerializer
 from .exceptions import MajorNotFound
+from .pagination import MajorPagination
 
 
 logger = logging.getLogger(__name__)
 
 
 class MajorsListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
     queryset = Major.objects.all()
+    pagination_class = MajorPagination
     serializer_class = MajorSerializer
 
 
 class MajorAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         data = request.data

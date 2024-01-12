@@ -12,6 +12,8 @@ import QuestionsPage from "./pages/QuestionsPage"
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ActivatePage from "./pages/ActivatePage";
+import UniversitiesPage from "./pages/UniversitiesPage";
+import MajorsPage from "./pages/MajorsPage";
 
 
 function App() {
@@ -21,12 +23,14 @@ function App() {
         <Header/>
         <main className='py-3'>
           <Routes>
-            <Route path='/' element={<HomePage/>}/>
-            <Route path='/questions/all' element={<QuestionsPage/>}/>
-            <Route path='/login' element={<LoginPage/>}/>
-            <Route path='/register' element={<RegisterPage/>}/>
-            <Route path='/activate/:uid/:token' element={<ActivatePage/>}/>
-            <Route path="*" element={<NotFound/>}/>
+            <Route path='/' element={<HomePage/>} />
+            <Route path='/questions/all' element={<QuestionsPage/>} />
+            <Route path='/login' element={<LoginPage/>} />
+            <Route path='/register' element={<RegisterPage/>} />
+            <Route path='/activate/:uid/:token' element={<ActivatePage/>} />
+            <Route path='/universities/all' element={<UniversitiesPage/>} />
+            <Route path='/majors/all' element={<MajorsPage/>} />
+            <Route path="*" element={<NotFound/>} />
           </Routes>
           <ToastContainer theme='dark'/>
         </main>

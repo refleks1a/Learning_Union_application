@@ -1,22 +1,22 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import questionAPIService from "./questionAPIService";
+import majorAPIService from "./majorAPIService";
 
 
 const initialState = {
-	questions: [],
-	question: {},
+	majors: [],
+	major: {},
 	isError: false,
 	isLoading: false,
 	isSuccess: false,
 	message: "",
 };
 
-// get all questions
-export const getQuestions = createAsyncThunk(
-	"questions/getAll",
+// get all majors
+export const getMajors = createAsyncThunk(
+	"majors/getAll",
 	async (_, thunkAPI) => {
 		try {
-			return await questionAPIService.getQuestions();
+			return await majorAPIService.getMajors();
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -30,23 +30,23 @@ export const getQuestions = createAsyncThunk(
 	}
 );
 
-export const questionSlice = createSlice({
-	name: "question",
+export const majorSlice = createSlice({
+	name: "major",
 	initialState,
 	reducers: {
 		reset: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(getQuestions.pending, (state) => {
+			.addCase(getMajors.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getQuestions.fulfilled, (state, action) => {
+			.addCase(getMajors.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.questions = action.payload.results;
+				state.majors = action.payload;
 			})
-			.addCase(getQuestions.rejected, (state, action) => {
+			.addCase(getMajors.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
@@ -55,5 +55,5 @@ export const questionSlice = createSlice({
 });
 
 
-export const { reset } = questionSlice.actions;
-export default questionSlice;
+export const { reset } = majorSlice.actions;
+export default majorSlice;

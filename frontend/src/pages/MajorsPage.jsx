@@ -3,15 +3,15 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-import Question from "../components/Question";
+import Major from "../components/Major";
 import Title from "../components/Title";
 import Spinner from "../components/Spinner";
-import { getQuestions } from "../features/questions/questionSlice";
+import { getMajors } from "../features/majors/majorSlice";
 
 
-const QuestionsPage = () => {
-	const { questions, isLoading, isError, message } = useSelector(
-		(state) => state.questions
+const MajorsPage = () => {
+	const { majors, isLoading, isError, message } = useSelector(
+		(state) => state.majors
 	);
 
 	const dispatch = useDispatch();
@@ -20,35 +20,35 @@ const QuestionsPage = () => {
 		if (isError) {
 			toast.error(message, { icon: "😭" });
 		}
-		dispatch(getQuestions());
+		dispatch(getMajors());
 	}, [dispatch, isError, message]);
 
 	if (isLoading) {
-		return <Spinner/>;
+		return <Spinner />;
 	}
 
 	return (
 		<>
-			<Title title="Questions List"/>
+			<Title title="Majors List"/>
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">
-						<h1>Questions List</h1>
+						<h1>Majors List</h1>
 						<hr className="hr-text" />
 					</Col>
 				</Row>
 				{
 					<>
 						<Row className="mt-3">
-							{questions.map((question) => (
+							{majors.map((major) => (
 								<Col
-									key={question.uid}
+									key={major.uid}
 									sm={12}
 									md={6}
 									lg={4}
 									xl={3}
 								>
-									<Question question={question} />
+									<Major major={major} />
 								</Col>
 							))}
 						</Row>
@@ -59,4 +59,5 @@ const QuestionsPage = () => {
 	);
 };
 
-export default QuestionsPage;
+
+export default MajorsPage;

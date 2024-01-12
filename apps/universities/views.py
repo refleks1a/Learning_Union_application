@@ -11,6 +11,7 @@ import logging
 from .models import University
 from .serializers import UniversitySerializer, CreateUniversitySerializer, UpdateUniversitySerializer
 from .exceptions import UniversityNotFound
+from .pagination import UniversityPagination
 
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ class UniversitiesFilter(django_filters.FilterSet):
 class UniversitiesListAPIView(generics.ListAPIView):
     queryset = University.objects.all()
     serializer_class = UniversitySerializer
+    pagination_class = UniversityPagination
     filter_backends = [
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
     ]
