@@ -1,20 +1,24 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { FaSignInAlt, FaSignOutAlt } from "react-icons/fa";
-import { FaBorderAll } from "react-icons/fa";
+import { FaSignInAlt, FaSignOutAlt, FaBorderAll } from "react-icons/fa";
+import { GiHouse } from "react-icons/gi";
+import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { logout, reset } from "../features/auth/authSlice";
+
 
 const Header = () => {
-	// const navigate = useNavigate();
-	// const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
-	// const { user } = useSelector((state) => state.auth);
+	const { user } = useSelector((state) => state.auth);
 
-	// const logoutHandler = () => {
-	// 	dispatch(logout());
-	// 	dispatch(reset());
-	// 	navigate("/");
-	// };
+	const logoutHandler = () => {
+		dispatch(logout());
+		dispatch(reset());
+		navigate("/");
+	};
 	return (
 		<header>
 			<Navbar
@@ -49,7 +53,7 @@ const Header = () => {
 								<Nav.Link>Universities</Nav.Link>
 							</LinkContainer>
 
-							{/* {user ? (
+							{user ? (
 								<NavDropdown
 									title={
 										user.firstName
@@ -74,7 +78,7 @@ const Header = () => {
 										<FaSignInAlt /> Login
 									</Nav.Link>
 								</LinkContainer>
-							)} */}
+							)}
 						</Nav>
 					</Navbar.Collapse>
 				</Container>

@@ -8,6 +8,7 @@ import Spinner from "../components/Spinner";
 import Title from "../components/Title";
 import { login, reset } from "../features/auth/authSlice";
 
+
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -103,7 +104,7 @@ const LoginPage = () => {
 
 				<Row className="py-3">
 					<Col>
-						New Customer?
+						New User?
 						<Link to="/register">Register Here.....</Link>
 					</Col>
 				</Row>
@@ -111,5 +112,6 @@ const LoginPage = () => {
 		</>
 	);
 };
+
 
 export default LoginPage;

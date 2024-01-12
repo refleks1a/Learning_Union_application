@@ -4,9 +4,12 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
 import Spinner from "../components/Spinner";
 import Title from "../components/Title";
+
 import { activate, reset } from "../features/auth/authSlice";
+
 
 const ActivatePage = () => {
 	const { uid, token } = useParams();
@@ -71,5 +74,6 @@ const ActivatePage = () => {
 		</>
 	);
 };
+
 
 export default ActivatePage;

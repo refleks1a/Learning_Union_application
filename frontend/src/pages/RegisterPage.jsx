@@ -8,10 +8,12 @@ import Spinner from "../components/Spinner";
 import Title from "../components/Title";
 import { register, reset } from "../features/auth/authSlice";
 
+
 const RegisterPage = () => {
 	const [username, setUsername] = useState("");
 	const [first_name, setFirstName] = useState("");
 	const [last_name, setLastName] = useState("");
+	const [fathers_name, setFathersName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [re_password, setRePassword] = useState("");
@@ -48,6 +50,7 @@ const RegisterPage = () => {
 				username,
 				first_name,
 				last_name,
+				fathers_name,
 				email,
 				password,
 				re_password,
@@ -106,6 +109,18 @@ const RegisterPage = () => {
 									value={last_name}
 									onChange={(e) =>
 										setLastName(e.target.value)
+									}
+								/>
+							</Form.Group>
+
+							<Form.Group controlId="fathers_name">
+								<Form.Label>Fathers Name</Form.Label>
+								<Form.Control
+									type="name"
+									placeholder="Enter Fathers Name"
+									value={fathers_name}
+									onChange={(e) =>
+										setFathersName(e.target.value)
 									}
 								/>
 							</Form.Group>

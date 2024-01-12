@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Question from "../components/Question";
 import Title from "../components/Title";
 import Spinner from "../components/Spinner";
-import { getQuestions, reset } from "../features/questions/questionSlice";
+import { getQuestions } from "../features/questions/questionSlice";
 
 
 const QuestionsPage = () => {
