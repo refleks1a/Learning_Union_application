@@ -44,7 +44,7 @@ export const majorSlice = createSlice({
 			.addCase(getMajors.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.majors = action.payload;
+				state.majors = action.payload.results;
 			})
 			.addCase(getMajors.rejected, (state, action) => {
 				state.isLoading = false;

@@ -1,22 +1,22 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import questionAPIService from "./questionAPIService";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import answerAPIService from "./answerAPIService";
 
 
 const initialState = {
-	questions: [],
-	question: {},
+	answers: [],
+	answer: {},
 	isError: false,
 	isLoading: false,
 	isSuccess: false,
 	message: "",
 };
 
-// get all questions
-export const getQuestions = createAsyncThunk(
-	"questions/getAll",
-	async (_, thunkAPI) => {
+// get all answers
+export const getAnswers = createAsyncThunk(
+	"answers/getAll",
+	async (uid, thunkAPI) => {
 		try {
-			return await questionAPIService.getQuestions();
+			return await answerAPIService.getAnswers(uid);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -30,14 +30,13 @@ export const getQuestions = createAsyncThunk(
 	}
 );
 
-
-export const getQuestionDetails = createAsyncThunk(
-	"questions/getDetails",
+// get answer details
+export const getAnswerDetails = createAsyncThunk(
+	"answers/getDetails",
 	async (uid, thunkAPI) => {
 		try {
-			return await questionAPIService.getQuestionDetails(uid);
-		}
-		catch (error) {
+			return await answerAPIService.getAnswerDetails(uid);
+		} catch (error) {
 			const message =
 				(error.response &&
 					error.response.data &&
@@ -48,40 +47,38 @@ export const getQuestionDetails = createAsyncThunk(
 			return thunkAPI.rejectWithValue(message);
 		}
 	}
-)
+);
 
-
-
-export const questionSlice = createSlice({
-	name: "question",
+export const answerSlice = createSlice({
+	name: "answer",
 	initialState,
 	reducers: {
 		reset: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(getQuestions.pending, (state) => {
+			.addCase(getAnswers.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getQuestions.fulfilled, (state, action) => {
+			.addCase(getAnswers.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.questions = action.payload.results;
+				state.answers = action.payload;
 			})
-			.addCase(getQuestions.rejected, (state, action) => {
+			.addCase(getAnswers.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
 			})
-			.addCase(getQuestionDetails.pending, (state) => {
+			.addCase(getAnswerDetails.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getQuestionDetails.fulfilled, (state, action) => {
+			.addCase(getAnswerDetails.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.question = action.payload;
+				state.answer = action.payload;
 			})
-			.addCase(getQuestionDetails.rejected, (state, action) => {
+			.addCase(getAnswerDetails.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
@@ -90,5 +87,5 @@ export const questionSlice = createSlice({
 });
 
 
-export const { reset } = questionSlice.actions;
-export default questionSlice;
+export const { reset } = answerSlice.actions;
+export default answerSlice;

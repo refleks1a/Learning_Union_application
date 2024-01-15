@@ -7,6 +7,12 @@ const getQuestions = async () => {
 	return response.data;
 };
 
-const questionAPIService = { getQuestions };
+// Get Question
+const getQuestionDetails = async (uid) => {
+	const response = await axios.get("/api/v1/questions/question/"+uid+"/")
+	return response.data
+}
+
+const questionAPIService = { getQuestions, getQuestionDetails };
 
 export default questionAPIService;

@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { FaSignInAlt, FaSignOutAlt, FaBorderAll } from "react-icons/fa";
-import { GiHouse } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";

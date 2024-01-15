@@ -23,6 +23,7 @@ from apps.questions.exceptions import QuestionNotFound
 
 from apps.profiles.models import Profile
 from apps.profiles.exceptions import ProfileNotFound
+from apps.profiles.serializers import ProfileSerializer
 
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,6 @@ class AnswerFilter(django_filters.FilterSet):
 
 
 class GetAnswersOnQuestionAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
     serializer_class = AnswerSerializer
     filter_backends = [
         DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter
@@ -54,9 +54,8 @@ class GetAnswersOnQuestionAPIView(generics.ListAPIView):
     ordering_fields = ["date_answered", "date_modified"]
     
     def get_queryset(self):
-        data = self.request.data
         try:
-            uid = data["uid"]
+            uid = self.kwargs["uid"]
             question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
@@ -98,19 +97,16 @@ class GetUsersAnswersAPIView(generics.ListAPIView):
 
 
 class GetAnswerAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request):
-        data = request.data
+    def get(self, request, uid):
         try:
-            uid = data["uid"]
             answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound 
         except ValidationError:
             return Response("Not valid uid")
 
-        serializer = AnswerSerializer(answer, context={"request": request})   
+        serializer = AnswerSerializer(answer, context={"request": request})  
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 

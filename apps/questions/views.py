@@ -90,15 +90,15 @@ class QuestionViewsAPIView(APIView):
 
 class GetQuestionAPIView(APIView):
 
-    def get(self, request):
-        data = request.data
+    def get(self, request, uid):
         try:
-            uid = data["uid"]
             question = Question.objects.get(uid=uid)
         except Question.DoesNotExist: 
             raise QuestionNotFound   
         except ValidationError:
             return Response("Not valid uid")
+        except KeyError: 
+            return Response("Missing uid")
 
         # Get the IP address of the user
         x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
@@ -123,10 +123,8 @@ class UpdateQuestionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdateQuestionSerializer
 
-    def patch(self, request):
-        data = request.data
+    def patch(self, request, uid):
         try:
-            uid = data["uid"]
             question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
@@ -141,9 +139,9 @@ class UpdateQuestionAPIView(APIView):
         
         # Change the date of modification of the question
         data = request.data
-        data._mutable = True
+        data = data.copy()
         data["date_modified"] = now()
-        data._mutable = False
+        
         serializer = UpdateQuestionSerializer(instance=question, data=data, partial=True)
 
         serializer.is_valid()
@@ -179,10 +177,8 @@ class CreateQuestionAPIView(APIView):
 class DeleteQuestionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request):
-        data = request.data
+    def delete(self, request, uid):
         try:
-            uid = data["uid"]
             question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound
@@ -210,19 +206,11 @@ class DeleteQuestionAPIView(APIView):
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
-def UploadQuestionImage(request):
+def UploadQuestionImage(request, uid):
     if not request.FILES.get("image_1") and not request.FILES.get("image_2") and not request.FILES.get("image_3"):
         return Response("No images has been sent.", status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data
-    user_profile = Profile.objects.get(user=request.user)
-    
-    try:
-        uid = data["uid"]
-    except KeyError:    
-        raise MissingQuestionID
-    except ValidationError:
-            return Response("Not valid uid")
+    user_profile = Profile.objects.get(user=request.user)    
 
     try:
         question = Question.objects.get(uid=uid)
@@ -247,11 +235,10 @@ def UploadQuestionImage(request):
 class DeleteQuestionImageAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request):
+    def delete(self, request, uid):
         data = request.data
         
         try:
-            uid = data["uid"]
             question = Question.objects.get(uid=uid)
         except Question.DoesNotExist:
             raise QuestionNotFound

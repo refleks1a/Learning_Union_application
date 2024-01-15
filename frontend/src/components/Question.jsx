@@ -6,13 +6,23 @@ import { Link } from "react-router-dom";
 const Question = ({ question }) => {
 	return (
 		<Card style={{ width: "18rem" }}>
-			<Badge
-				bg="success"
-				className="position-absolute top-0 start-100 translate-middle rounded-pill"
-			>
-				{question.is_solved}
-			</Badge>
-			<Link to={`/question/`}>
+			{question.solved_status ? (
+				<Badge
+					bg="success"
+					className="position-absolute top-0 start-100 translate-middle rounded-pill"
+				>
+					Solved
+				</Badge>
+			) : (
+				<Badge
+					bg="danger"
+					className="position-absolute top-0 start-100 translate-middle rounded-pill"
+				>
+					Not solved
+				</Badge>
+			)}
+			
+			<Link to={`/question/${question.uid}`} >
 				<Card.Img src={question.profile_photo} variant="top" />
 			</Link>
 			<Card.Body>
@@ -32,7 +42,7 @@ const Question = ({ question }) => {
 					</Col>
 				</Row>
 				<hr />
-				<Link to={`/question/`}>
+				<Link to={`/question/${question.uid}`}>
 					<Button variant="primary">Get More Info &gt; &gt;</Button>
 				</Link>
 			</Card.Body>
