@@ -6,8 +6,8 @@ from .views import (MajorsListAPIView, MajorAPIView, CreateMajorAPIView,
 
 urlpatterns = [
     path("all/", MajorsListAPIView.as_view(), name="all-majors"),
-    path("major/", MajorAPIView.as_view(), name="major"),
+    path("major/<str:uid>/", MajorAPIView.as_view(), name="major"),
     path("create/", CreateMajorAPIView.as_view(), name="create-major"),
-    path("update/", UpdateMajorAPIView.as_view(), name="update-major"),
-    path("delete/", DeleteMajorAPIView.as_view(), name="delete-major"),
+    path("update/<str:uid>/", UpdateMajorAPIView.as_view(), name="update-major"),
+    path("delete/<str:uid>/", DeleteMajorAPIView.as_view(), name="delete-major"),
 ]

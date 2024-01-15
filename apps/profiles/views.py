@@ -9,7 +9,6 @@ from django.utils.datastructures import MultiValueDictKeyError
 
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
-from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
@@ -58,8 +57,6 @@ class ProfilesListAPIView(generics.ListAPIView):
 
 class GetProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [ProfileJSONRenderer] 
-
 
     def get(self, request):
         user = self.request.user
@@ -71,7 +68,6 @@ class GetProfileAPIView(APIView):
 
 class UpdateProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [ProfileJSONRenderer] 
 
     serializer_class = UpdateProfileSerializer
 

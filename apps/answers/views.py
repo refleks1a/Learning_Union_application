@@ -115,10 +115,9 @@ class UpdateAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UpdateAnswerSerializer
 
-    def patch(self, request):
+    def patch(self, request, uid):
         data = request.data
         try:
-            uid = data["uid"]
             answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound
@@ -198,11 +197,10 @@ class CreteAnswerAPIView(APIView):
 class DeleteAnswerAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request):
+    def delete(self, request, uid):
         data = request.data
 
         try:
-            uid = data["uid"]
             answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound
@@ -239,11 +237,10 @@ class DeleteAnswerAPIView(APIView):
 class IsSolutionAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def patch(self, request):
+    def patch(self, request, uid):
         data = request.data
 
         try:
-            uid = data["uid"]
             answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound  
@@ -277,16 +274,15 @@ class IsSolutionAPIView(APIView):
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
-def UploadAnswerImage(request):
+def UploadAnswerImage(request, uid):
     # Check that at least is uploaded
     if not request.FILES.get("image_1") and not request.FILES.get("image_2") and not request.FILES.get("image_3"):
         return Response("No images has been sent.", status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data
     user_profile = Profile.objects.get(user=request.user)
     
     try:
-        answer_uid = data["uid"]
+        answer_uid = uid
     except KeyError:    
         raise MissingAnswerID
     except ValidationError:
@@ -315,11 +311,10 @@ def UploadAnswerImage(request):
 class DeleteAnswerImageAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def delete(self, request):
+    def delete(self, request, uid):
         data = request.data
         
         try:
-            uid = data["uid"]
             answer = Answer.objects.get(uid=uid)
         except Answer.DoesNotExist:
             raise AnswerNotFound

@@ -64,10 +64,8 @@ class UniversitiesListAPIView(generics.ListAPIView):
 class UniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request):
-        data = request.data
+    def get(self, request, uid):
         try:
-            uid = data["uid"]
             university =  University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
@@ -105,10 +103,8 @@ class CreateUniversityAPIView(APIView):
 class UpdateUniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def patch(self, request):
-        data = request.data
+    def patch(self, request, uid):
         try:
-            uid = data["uid"]
             university = University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
@@ -132,10 +128,8 @@ class UpdateUniversityAPIView(APIView):
 class DeleteUniversityAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def delete(self, request):
-        data = request.data
+    def delete(self, request, uid):
         try:
-            uid = data["uid"]
             university = University.objects.get(uid=uid)
         except University.DoesNotExist:
             raise UniversityNotFound
@@ -156,3 +150,4 @@ class DeleteUniversityAPIView(APIView):
             return Response(data=data, status=status.HTTP_200_OK)        
         
         return Response(status=status.HTTP_400_BAD_REQUEST)
+    

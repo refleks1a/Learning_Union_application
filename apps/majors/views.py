@@ -22,10 +22,8 @@ class MajorsListAPIView(generics.ListAPIView):
 
 class MajorAPIView(APIView):
 
-    def get(self, request):
-        data = request.data
+    def get(self, request, uid):
         try:
-            uid = data["uid"]
             major = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
@@ -59,10 +57,8 @@ class CreateMajorAPIView(APIView):
 class UpdateMajorAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def patch(self, request):
-        data = request.data
+    def patch(self, request, uid):
         try:
-            uid = data["uid"]
             major = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
@@ -86,10 +82,8 @@ class UpdateMajorAPIView(APIView):
 class DeleteMajorAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
 
-    def delete(self, request):
-        data = request.data
+    def delete(self, request, uid):
         try:
-            uid = data["uid"]
             university = Major.objects.get(uid=uid)
         except Major.DoesNotExist:
             raise MajorNotFound
