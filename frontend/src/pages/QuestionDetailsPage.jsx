@@ -10,8 +10,9 @@ import moment from "moment";
 
 import "../index.css";
 
-import Spinner from "../components/Spinner";
 import { getQuestionDetails } from "../features/questions/questionSlice";
+
+import Spinner from "../components/Spinner";
 import AnswersList from "../components/AnswersList";
 import DetailsBody from "../components/DetailsBody";
 import BackButton from "../components/BackButton";
@@ -82,6 +83,19 @@ const QuestionDetailsPage = () => {
 		},
 		
 	];
+
+	const breadcrumb_items = [
+		{
+			title: <Link to={'/'}>Home</Link>,
+		},
+		{
+			title: <Link to={'/questions/all/'}>Questions</Link>,
+		},
+		{
+			title: "Question details",
+		},
+	]
+
 	return (
 	<Layout>
 		<Layout 
@@ -97,11 +111,7 @@ const QuestionDetailsPage = () => {
 					borderRadius: borderRadiusLG,
 					}}>
 					<Row style={{marginLeft: "60px"}}>
-						<Breadcrumb style={{ margin: '16px 0' }}>
-							<Breadcrumb.Item><Link to={'/'}>Home</Link></Breadcrumb.Item>
-							<Breadcrumb.Item><Link to={'/questions/all/'}>Questions</Link></Breadcrumb.Item>
-							<Breadcrumb.Item>Question details</Breadcrumb.Item>
-						</Breadcrumb>
+						<Breadcrumb style={{ margin: '16px 0' }} items={breadcrumb_items}></Breadcrumb>
 					</Row>
 					<Row style={{marginLeft: "60px"}}>
 						<BackButton/>

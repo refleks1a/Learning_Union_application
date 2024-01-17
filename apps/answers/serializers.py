@@ -112,6 +112,6 @@ class UpdateIsSolutionSerializer(serializers.ModelSerializer):
 
 class CreateAnswerSerializer(serializers.ModelSerializer):
 
-        class Meta:
-            model = Answer
-            exclude = ["id"]
+    class Meta:
+        model = Answer
+        exclude = ["id"]

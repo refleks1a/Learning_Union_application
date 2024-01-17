@@ -66,6 +66,21 @@ const AnswerDetailsPage = () => {
 		  children: moment(answer.date_modified).format("YYYY/MM/DD kk:mm:ss"),
 		},
 	];
+
+	const breadcrumb_items = [
+		{
+			title: <Link to={'/'}>Home</Link>,
+		},
+		{
+			title: <Link to={'/questions/all/'}>Questions</Link>,
+		},
+		{
+			title: <Link to={`/question/${answer.question_uid}`}>Question Details</Link>,
+		},
+		{
+			title: "Answer Details",
+		},
+	]
 	
 	return (
 		<Layout>
@@ -82,12 +97,7 @@ const AnswerDetailsPage = () => {
 					borderRadius: borderRadiusLG,
 					}}>
 					<Row style={{marginLeft: "60px"}}>
-						<Breadcrumb style={{ margin: '16px 0' }} >
-							<Breadcrumb.Item><Link to={'/'}>Home</Link></Breadcrumb.Item>
-							<Breadcrumb.Item><Link to={'/questions/all/'}>Questions</Link></Breadcrumb.Item>
-							<Breadcrumb.Item><Link to={`/question/${answer.question_uid}`}>Question Details</Link></Breadcrumb.Item>
-							<Breadcrumb.Item>Answer Details</Breadcrumb.Item>
-						</Breadcrumb>
+						<Breadcrumb style={{ margin: '16px 0' }} items={breadcrumb_items}></Breadcrumb>
 					</Row>
 					<Row style={{marginLeft: "60px"}}>
 						<BackButton/>

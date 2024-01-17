@@ -158,10 +158,11 @@ class CreteAnswerAPIView(APIView):
         except ValidationError:
             return Response("Not valid uid")
   
-
+        data._mutable = True
         data["author"] = user_profile.pkid
         data["question"] = question.pk
         data["date_answered"] = now()
+        data._mutable = False
 
         serializer = CreateAnswerSerializer(data=data)
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+import FormData from "form-data";
 
 
 // Get Answers
@@ -15,14 +16,29 @@ const getAnswerDetails = async (uid) => {
 
 // Create Answer
 const createAnswer = async (answerData) => {
+	let formData = new FormData();
+	if(answerData.image_1){
+		formData.set('image_1', answerData.image_1);
+	}
+	if(answerData.image_2){
+		formData.set('image_2', answerData.image_2);
+	}
+	if(answerData.image_3) {
+		formData.set('image_3', answerData.image_3);
+	}
+	
+	formData.set('uid', answerData.uid);
+	formData.set('title', answerData.title);
+	formData.set('description', answerData.description);
+	
 	const config = {
 		headers: {
-			"Content-Type": "application/json",
+			"Content-Type": 'multipart/form-data',
 			"Authorization" : `Bearer ${answerData.token}`
 		},
 	};
 	
-	const response = await axios.post("/api/v1/answers/create/", answerData, config)
+	const response = await axios.post("/api/v1/answers/create/", formData, config)
 	return response.data
 }
 
