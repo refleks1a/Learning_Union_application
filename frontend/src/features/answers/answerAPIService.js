@@ -13,7 +13,20 @@ const getAnswerDetails = async (uid) => {
 	return response.data
 }
 
+// Create Answer
+const createAnswer = async (answerData) => {
+	const config = {
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization" : `Bearer ${answerData.token}`
+		},
+	};
+	
+	const response = await axios.post("/api/v1/answers/create/", answerData, config)
+	return response.data
+}
 
-const answerAPIService = { getAnswers, getAnswerDetails };
+
+const answerAPIService = { getAnswers, getAnswerDetails, createAnswer };
 
 export default answerAPIService;

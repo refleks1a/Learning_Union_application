@@ -4,11 +4,12 @@ import { toast } from "react-toastify";
 import { useParams, Link } from "react-router-dom";
 import { Breadcrumb, Layout, theme, Divider ,Descriptions, Row } from 'antd';
 
-
 import moment from "moment";
 
 import Spinner from "../components/Spinner";
 import DetailsBody from "../components/DetailsBody";
+import BackButton from "../components/BackButton";
+
 import { getAnswerDetails } from "../features/answers/answerSlice";
 
 import "../index.css";
@@ -17,6 +18,7 @@ import "../index.css";
 const AnswerDetailsPage = () => {
 	const { Content } = Layout;
 	const { uid } = useParams();
+
 
   	const { answer, isLoading, isError, message } = useSelector(
 		(state) => state.answers
@@ -84,8 +86,11 @@ const AnswerDetailsPage = () => {
 							<Breadcrumb.Item><Link to={'/'}>Home</Link></Breadcrumb.Item>
 							<Breadcrumb.Item><Link to={'/questions/all/'}>Questions</Link></Breadcrumb.Item>
 							<Breadcrumb.Item><Link to={`/question/${answer.question_uid}`}>Question Details</Link></Breadcrumb.Item>
-							<Breadcrumb.Item>Question Details</Breadcrumb.Item>
+							<Breadcrumb.Item>Answer Details</Breadcrumb.Item>
 						</Breadcrumb>
+					</Row>
+					<Row style={{marginLeft: "60px"}}>
+						<BackButton/>
 					</Row>
 					<Divider>
 						<h1 style={{
@@ -108,5 +113,6 @@ const AnswerDetailsPage = () => {
 	</Layout>	
   );
 };
+
 
 export default AnswerDetailsPage;

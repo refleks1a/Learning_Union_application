@@ -2,17 +2,19 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useParams, Link } from "react-router-dom";
-import { Breadcrumb, Layout, theme, Divider ,Descriptions, Image, Col, Row } from 'antd';
 
-import Carousel from 'react-bootstrap/Carousel';
+import { Breadcrumb, Layout, theme, Divider ,Descriptions, Row } from 'antd';
+import { Button } from "react-bootstrap";
 
 import moment from "moment";
 
 import "../index.css";
+
 import Spinner from "../components/Spinner";
 import { getQuestionDetails } from "../features/questions/questionSlice";
 import AnswersList from "../components/AnswersList";
 import DetailsBody from "../components/DetailsBody";
+import BackButton from "../components/BackButton";
 
 
 const { Content } = Layout;
@@ -24,7 +26,6 @@ const QuestionDetailsPage = () => {
 	  } = theme.useToken();
 	  
 	const { uid } = useParams();
-	const user = localStorage.getItem("user")
 
 	const { question, isLoading, isError, message } = useSelector(
 		(state) => state.questions
@@ -48,7 +49,7 @@ const QuestionDetailsPage = () => {
 		{
 		  key: '1',
 		  label: 'Author',
-		  children: user.username,
+		  children: question.author_uid,
 		},
 		{
 		  key: '2',
@@ -102,6 +103,9 @@ const QuestionDetailsPage = () => {
 							<Breadcrumb.Item>Question details</Breadcrumb.Item>
 						</Breadcrumb>
 					</Row>
+					<Row style={{marginLeft: "60px"}}>
+						<BackButton/>
+					</Row>
 					<Divider>
 						<h1 style={{
 							textAlign: 'center',
@@ -112,7 +116,10 @@ const QuestionDetailsPage = () => {
 						</h1>
 					</Divider>
 					<Row style={{marginLeft: "60px"}}>
-						<Descriptions title="Question Info" items={items} contentStyle={{fontSize: 17,}} labelStyle={{fontSize: 17}} />
+						<Descriptions title="Question Info" items={items} contentStyle={{fontSize: 17}} labelStyle={{fontSize: 17}} />
+						<Link to={`/answer/create/${uid}`}>
+							<Button size="lg" variant="outline-primary">Answer this question</Button>
+						</Link>
 					</Row>
 						
 					<Divider/>
@@ -124,5 +131,6 @@ const QuestionDetailsPage = () => {
 	</Layout>	
   );
 };
+
 
 export default QuestionDetailsPage;

@@ -6,7 +6,7 @@ import Carousel from 'react-bootstrap/Carousel';
 
 const DetailsBody = ({ item, item_name }) => {
 	return (
-        <Row style={{minHeight: "150px"}}>
+        <Row style={{minHeight: "150px", marginLeft: "60px"}}>
             <Col>
             {item.image_1 || item.image_2 || item.image_3 ? (
                 <Carousel slide={false} style={{width: 720, height: 480}}>
@@ -43,7 +43,7 @@ const DetailsBody = ({ item, item_name }) => {
             </Carousel>
             ) : (null)}
             </Col>
-            <Col style={{marginLeft: "60px", width: "830px", }}>
+            <Col style={{marginLeft: "80px",marginRight: "60px", width: "690px" }}>
                 <h4 style={{fontSize: "17px"}}>Details of the {item_name}</h4>
                 <p>{item.details} {item.description}</p>
             </Col>

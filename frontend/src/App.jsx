@@ -16,6 +16,7 @@ import UniversitiesPage from "./pages/UniversitiesPage";
 import MajorsPage from "./pages/MajorsPage";
 import QuestionDetailsPage from "./pages/QuestionDetailsPage";
 import AnswerDetailsPage from "./pages/AnswerDetailsPage";
+import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path='/questions/all' element={<QuestionsPage/>} />
             <Route path='/question/:uid' element={<QuestionDetailsPage/>} />
             <Route path='/answer/:uid' element={<AnswerDetailsPage/>} ></Route>
+            <Route path='/answer/create/:uid' element={<AnswerQuestionPage/>} ></Route>
             <Route path='/universities/all' element={<UniversitiesPage/>} />
             <Route path='/majors/all' element={<MajorsPage/>} />
             <Route path="*" element={<NotFound/>} />

@@ -49,6 +49,25 @@ export const getAnswerDetails = createAsyncThunk(
 	}
 );
 
+export const createAnswer = createAsyncThunk(
+	"answers/create",
+	async (data, thunkAPI) => {
+		try {
+			return await answerAPIService.createAnswer(data);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
+
 export const answerSlice = createSlice({
 	name: "answer",
 	initialState,
@@ -70,6 +89,8 @@ export const answerSlice = createSlice({
 				state.isError = true;
 				state.message = action.payload;
 			})
+
+
 			.addCase(getAnswerDetails.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -79,6 +100,21 @@ export const answerSlice = createSlice({
 				state.answer = action.payload;
 			})
 			.addCase(getAnswerDetails.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+
+			.addCase(createAnswer.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(createAnswer.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.answer = action.payload;
+			})
+			.addCase(createAnswer.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
