@@ -7,6 +7,12 @@ from apps.questions.serializers import QuestionSerializer
 from apps.answers.models import Answer
 from apps.answers.serializers import AnswerSerializer
 
+from apps.universities.models import University
+from apps.universities.serializers import UniversitySerializer
+
+from apps.majors.models import Major
+from apps.majors.serializers import MajorSerializer
+
 from .models import Profile
 
 
@@ -20,6 +26,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source="user.email")
     country = CountryField(name_only=True)
 
+    university = serializers.SerializerMethodField()
+    major = serializers.SerializerMethodField()
+
     
     questions = serializers.SerializerMethodField(read_only=True)
     answers = serializers.SerializerMethodField(read_only=True)
@@ -28,11 +37,11 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["id", "username", "first_name", "last_name", 
-                  "fathers_name", "email", "id", "phone_number",
-                  "profile_photo", "about_me","gender","country",
+                  "fathers_name", "email", "phone_number",
+                  "profile_photo", "about_me","gender", "country",
                   "city", "university", "major", "education_language", "year_of_study",
                   "degree_type", "is_student", "is_teacher", "is_other",
-                  "answers", "questions", 
+                  "answers", "questions", "rating", "top_helper", "num_reviews"
                   ]
         
 
@@ -49,6 +58,22 @@ class ProfileSerializer(serializers.ModelSerializer):
 
         return serializer.data
     
+
+    def get_university(self, obj):
+        if obj.university:
+            university = University.objects.get(name=obj.university.name)
+            serializer = UniversitySerializer(university)
+            return serializer.data
+        return None
+    
+
+    def get_major(self, obj):
+        if obj.major:
+            major = Major.objects.get(name=obj.major.name)
+            serializer = MajorSerializer(major)
+            return serializer.data
+        return None
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

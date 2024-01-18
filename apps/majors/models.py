@@ -14,3 +14,6 @@ class Major(models.Model):
     name = models.CharField(verbose_name=_("Name of the major"), max_length=255)
     num_students = models.IntegerField(verbose_name=_("Number of students with this major"),
         default=0)
+    
+    def __str__(self):
+        return self.name

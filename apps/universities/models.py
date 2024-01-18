@@ -59,3 +59,8 @@ class University(models.Model):
         choices=Range.choices, default=0, help_text=_("1=Poor, 2=Fair, 3=Good, 4=Very good, 5=excellent"))
     
     is_active = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return self.name
+    

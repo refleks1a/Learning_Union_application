@@ -11,13 +11,12 @@ const initialState = {
 	message: "",
 };
 
-// get profile
+// get user's profile
 export const getMyProfile = createAsyncThunk(
-	"profiles/getMe",
-	async (token, thunkAPI) => {
+	"profile/getMe",
+	async (data, thunkAPI) => {
 		try {
-            console.log(token)
-			return await profileAPIService.getMyProfile(token);
+			return await profileAPIService.getMyProfile(data);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -45,13 +44,13 @@ export const profileSlice = createSlice({
 			.addCase(getMyProfile.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.profile = action.payload.results;
+				state.profile = action.payload;
 			})
 			.addCase(getMyProfile.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
-			});
+			})
 	},
 });
 

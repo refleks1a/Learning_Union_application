@@ -50,7 +50,7 @@ const QuestionDetailsPage = () => {
 		{
 		  key: '1',
 		  label: 'Author',
-		  children: question.author_uid,
+		  children: question.author_full_name,
 		},
 		{
 		  key: '2',

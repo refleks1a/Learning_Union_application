@@ -17,6 +17,7 @@ import MajorsPage from "./pages/MajorsPage";
 import QuestionDetailsPage from "./pages/QuestionDetailsPage";
 import AnswerDetailsPage from "./pages/AnswerDetailsPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
+import MyProfilePage from "./pages/MyProfilePage";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
             <Route path='/answer/create/:uid' element={<AnswerQuestionPage/>} ></Route>
             <Route path='/universities/all' element={<UniversitiesPage/>} />
             <Route path='/majors/all' element={<MajorsPage/>} />
+            <Route path='/profiles/me' element={<MyProfilePage/>} ></Route>
             <Route path="*" element={<NotFound/>} />
           </Routes>
           <ToastContainer theme='dark'/>

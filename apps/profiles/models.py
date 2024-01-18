@@ -25,8 +25,8 @@ class Edu_Language(models.TextChoices):
     OTHER = "OTHER", _("Other")
 
 class Degree_Type(models.TextChoices):
-    Bachelor = "Bch", _("Bachelor's degree") 
-    Masters = "Ms", _("Masters's degree") 
+    Bachelor = "Bachelor", _("Bachelor's degree") 
+    Masters = "Masters", _("Masters's degree") 
     PHD = "PHD", _("PHD")
     
 

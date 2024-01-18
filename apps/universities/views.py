@@ -62,7 +62,6 @@ class UniversitiesListAPIView(generics.ListAPIView):
 
 
 class UniversityAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, uid):
         try:

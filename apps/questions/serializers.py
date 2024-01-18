@@ -10,12 +10,13 @@ class QuestionSerializer(serializers.ModelSerializer):
     
     profile_photo = serializers.SerializerMethodField()
     author_uid = serializers.SerializerMethodField()
+    author_full_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
         fields = ["uid", "title", "details","short_description", "subject",
                   "num_views", "num_answers", "date_asked","date_modified",
-                  "date_last_view", "solved_status", "is_active",
+                  "date_last_view", "solved_status", "is_active", "author_full_name",
                   "image_1", "image_2", "image_3", "author_uid", "profile_photo"]
         
     def get_image_1(self, obj):
@@ -35,6 +36,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def get_author_uid(self, obj):
         return obj.author.id
+    
+    def get_author_full_name(self, obj):
+        return f"{obj.author.user.first_name} {obj.author.user.last_name} {obj.author.user.fathers_name}"
 
     def get_profile_photo(self, obj):
         return obj.author.profile_photo.url

@@ -15,7 +15,7 @@ const DetailsBody = ({ item, item_name }) => {
                         <Image
                             width={720}
                             height={480}
-                        src={item.image_1}
+                            src={item.image_1}
                             alt="First slide"
                         />
                     </Carousel.Item>

@@ -4,6 +4,7 @@ import { FaSignInAlt, FaSignOutAlt, FaBorderAll } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
+
 import { logout, reset } from "../features/auth/authSlice";
 
 
@@ -61,7 +62,7 @@ const Header = () => {
 									}
 									id="username"
 								>
-									<LinkContainer to="/profile">
+									<LinkContainer to="/profiles/me">
 										<NavDropdown.Item>
 											Profile
 										</NavDropdown.Item>
