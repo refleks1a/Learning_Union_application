@@ -11,6 +11,8 @@ from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
+from django.core.exceptions import ValidationError
+
 
 #Filters on Profiles model
 class ProfilesFilter(django_filters.FilterSet):
@@ -64,7 +66,20 @@ class GetProfileAPIView(APIView):
         serializer = ProfileSerializer(user_profile, context={"request":request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
+
+class GetUsersProfile(APIView):
+    def get(self, request, uid):
+        try:
+            profile = Profile.objects.get(id=uid)
+        except Profile.DoesNotExist:
+            return ProfileNotFound
+        except ValidationError:
+            return Response("Not valid uid")
+        
+        serializer = ProfileSerializer(profile, context={"request": request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UpdateProfileAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

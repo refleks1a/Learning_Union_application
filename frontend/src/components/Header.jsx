@@ -62,7 +62,7 @@ const Header = () => {
 									}
 									id="username"
 								>
-									<LinkContainer to="/profiles/me">
+									<LinkContainer to="/profile/me">
 										<NavDropdown.Item>
 											Profile
 										</NavDropdown.Item>

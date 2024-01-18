@@ -23,7 +23,6 @@ from apps.questions.exceptions import QuestionNotFound
 
 from apps.profiles.models import Profile
 from apps.profiles.exceptions import ProfileNotFound
-from apps.profiles.serializers import ProfileSerializer
 
 
 logger = logging.getLogger(__name__)

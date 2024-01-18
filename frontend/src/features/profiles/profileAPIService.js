@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-// Get users profile
+// Get my profile
 const getMyProfile = async (data) => {
     const config = {
 		headers: {
@@ -14,6 +14,19 @@ const getMyProfile = async (data) => {
 	return response.data;
 };
 
-const profileAPIService = { getMyProfile };
+// Get users profile
+const getProfile = async (data) => {
+    const config = {
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+
+	const response = await axios.get("/api/v1/profile/" + data.uid + "/", config);
+	return response.data;
+};
+
+
+const profileAPIService = { getMyProfile, getProfile };
 
 export default profileAPIService;

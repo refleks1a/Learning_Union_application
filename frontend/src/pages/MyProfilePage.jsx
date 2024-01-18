@@ -53,7 +53,7 @@ const MyProfilePage = () => {
 		}
 
 		dispatch(getMyProfile(data));
-	}, [dispatch, isError, isErrorUser, message, messageUser, isSuccessUser]);
+	}, [dispatch, navigate, user, isError, isErrorUser, message, messageUser, isSuccessUser]);
 
 	if (isLoading || isLoadingUser) {
 		return <Spinner />;
@@ -246,7 +246,7 @@ const MyProfilePage = () => {
 					<MDBCol md="6">
 					<MDBCard className="mb-4 mb-md-0">
 						<MDBCardBody>
-						<MDBCardTitle>{profile.username}'s Questions</MDBCardTitle>
+						<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Questions</MDBCardTitle>
 						<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
 							{questions.map((question) => (
 									<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-1' key={question.uid}>

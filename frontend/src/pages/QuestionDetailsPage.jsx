@@ -50,7 +50,7 @@ const QuestionDetailsPage = () => {
 		{
 		  key: '1',
 		  label: 'Author',
-		  children: question.author_full_name,
+		  children:  <Link to={`/profile/${question.author_uid}`}>{question.author_username} ({question.author_full_name})</Link> ,
 		},
 		{
 		  key: '2',

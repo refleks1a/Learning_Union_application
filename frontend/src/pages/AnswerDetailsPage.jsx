@@ -34,7 +34,7 @@ const AnswerDetailsPage = () => {
 			toast.error(message, { icon: "😭" });
 		}
 		dispatch(getAnswerDetails(uid));
-	}, [dispatch, , isError, , message, , uid]);
+	}, [dispatch, isError, message, uid]);
 
 	if (isLoading) {
 		return <Spinner/>;
@@ -44,7 +44,7 @@ const AnswerDetailsPage = () => {
 		{
 		  key: '1',
 		  label: 'Author',
-		  children: `${answer.username} (${answer.full_name})`,
+		  children: <Link to={`/profile/${answer.author_uid}`}>{answer.username} ({answer.full_name})</Link> ,
 		},
 		{
 		  key: '3',
