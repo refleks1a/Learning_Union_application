@@ -11,6 +11,7 @@ const initialState = {
 	message: "",
 };
 
+
 // get all answers
 export const getAnswers = createAsyncThunk(
 	"answers/getAll",
@@ -29,6 +30,7 @@ export const getAnswers = createAsyncThunk(
 		}
 	}
 );
+
 
 // get answer details
 export const getAnswerDetails = createAsyncThunk(
@@ -49,12 +51,33 @@ export const getAnswerDetails = createAsyncThunk(
 	}
 );
 
+
 // create answer
 export const createAnswer = createAsyncThunk(
 	"answers/create",
 	async (data, thunkAPI) => {
 		try {
 			return await answerAPIService.createAnswer(data);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
+
+// Delete answer
+export const deleteAnswer = createAsyncThunk(
+	"answers/delete",
+	async (data, thunkAPI) => {
+		try {
+			return await answerAPIService.deleteAnswer(data);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -120,6 +143,23 @@ export const answerSlice = createSlice({
 				state.isError = true;
 				state.message = action.payload;
 			})
+
+
+			.addCase(deleteAnswer.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteAnswer.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.answer = action.payload;
+			})
+			.addCase(deleteAnswer.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+			
 	},
 });
 

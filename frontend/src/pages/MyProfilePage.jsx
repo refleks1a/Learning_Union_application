@@ -6,6 +6,9 @@ import { useNavigate, Link } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { getMyProfile } from "../features/profiles/profileSlice";
 
+import { deleteQuestion } from "../features/questions/questionSlice";
+import { deleteAnswer } from "../features/answers/answerSlice";
+
 import {
 	MDBCol,
 	MDBContainer,
@@ -14,14 +17,15 @@ import {
 	MDBCardText,
 	MDBCardBody,
 	MDBCardImage,
-	MDBBadge,
 	MDBCardTitle,
 	MDBListGroup,
 	MDBListGroupItem,
 	MDBCardFooter,
 } from 'mdb-react-ui-kit';
 
-import { Badge, Button } from "antd";
+import { Badge, Button, Popover } from "antd";
+
+import CloseButton from 'react-bootstrap/CloseButton';
 
 
 const MyProfilePage = () => {
@@ -33,8 +37,34 @@ const MyProfilePage = () => {
 		(state) => state.auth
 	);
 
+	const dispatch_question_delete = useDispatch();
+	const dispatch_answer_delete = useDispatch();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	// Delete question
+	async function handleQuestionDelete(uid) {
+
+		const delete_question_data = {
+			"token": user.access,
+			"uid": uid,
+		};
+
+		dispatch_question_delete(deleteQuestion(delete_question_data));
+		window.location.reload(false);
+	}
+
+	// Delete answer
+	async function handleAnswerDelete(uid) {
+
+		const delete_answer_data = {
+			"token": user.access,
+			"uid": uid,
+		};
+
+		dispatch_answer_delete(deleteAnswer(delete_answer_data));
+		window.location.reload(false);
+	}
 
 	useEffect(() => {
 		if (isError) {
@@ -48,14 +78,16 @@ const MyProfilePage = () => {
 		if (!user) {
 			navigate("/login");
 		}
+		
 		const data = {
 			"token": user.access
 		}
 
 		dispatch(getMyProfile(data));
-	}, [dispatch, navigate, user, isError, isErrorUser, message, messageUser, isSuccessUser]);
+	}, [dispatch, navigate, user, isError, isErrorUser, message, messageUser,
+		isSuccessUser, dispatch_answer_delete, dispatch_question_delete,]);
 
-	if (isLoading || isLoadingUser) {
+	if ( isLoading || isLoadingUser ) {
 		return <Spinner />;
 	}
 
@@ -228,15 +260,16 @@ const MyProfilePage = () => {
 								<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-3' key={answer.uid}>
 									<div className='ms-2 me-auto'>
 										<Link to={`/answer/${answer.uid}`}>
-										<div className='fw-bold'>{answer.title}</div>
+											<div className='fw-bold'>{answer.title}</div>
 										</Link>
 										{answer.description.substr(0, 40)}...
 									</div>
-									<MDBBadge pill light>
-									14
-									</MDBBadge>
+
+									<Popover content={<h6 style={{color: 'red'}}>Delete answer</h6>} trigger="hover">
+										<CloseButton onClick={() => handleAnswerDelete(answer.uid)} />
+									</Popover>
+
 								</MDBListGroupItem>
-								
 							))}
 						</MDBListGroup>
 						</MDBCardBody>
@@ -249,20 +282,19 @@ const MyProfilePage = () => {
 						<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Questions</MDBCardTitle>
 						<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
 							{questions.map((question) => (
-									<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-1' key={question.uid}>
-										<div className='ms-2 me-auto'>
-											<Link to={`/question/${question.uid}`}>
+								<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-1' key={question.uid}>
+									<div className='ms-2 me-auto'>
+										<Link to={`/question/${question.uid}`}>
 											<div className='fw-bold'>{question.title}</div>
-											</Link>
-											{question.short_description.substring(0, 40)}...
-										</div>
-										<MDBBadge pill light>
-											14
-										</MDBBadge>
-										
-									</MDBListGroupItem>
-								
-								
+										</Link>
+										{question.short_description.substring(0, 40)}...
+									</div>
+									
+									<Popover content={<h6 style={{color: 'red'}}>Delete question</h6>} trigger="hover">
+										<CloseButton onClick={() => handleQuestionDelete(question.uid)} />
+									</Popover>
+
+								</MDBListGroupItem>
 							))}
 						</MDBListGroup>
 						</MDBCardBody>

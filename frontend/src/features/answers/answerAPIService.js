@@ -8,11 +8,13 @@ const getAnswers = async (uid) => {
 	return response.data;
 };
 
+
 // Get Answer Details 
 const getAnswerDetails = async (uid) => {
 	const response = await axios.get("/api/v1/answers/answer/" + uid + "/");
 	return response.data
 }
+
 
 // Create Answer
 const createAnswer = async (answerData) => {
@@ -43,6 +45,18 @@ const createAnswer = async (answerData) => {
 }
 
 
-const answerAPIService = { getAnswers, getAnswerDetails, createAnswer };
+// Delete Answer
+const deleteAnswer = async (data) => {
+	const config = {
+		headers: {
+			"Authorization" : `Bearer ${data.token}`
+		},
+	};
+	const response = await axios.delete("/api/v1/answers/delete/" + data.uid + "/", config);
+	return response.data
+}
+
+
+const answerAPIService = { getAnswers, getAnswerDetails, createAnswer, deleteAnswer };
 
 export default answerAPIService;
