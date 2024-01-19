@@ -19,6 +19,7 @@ import AnswerDetailsPage from "./pages/AnswerDetailsPage";
 import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
+import AskQuestionPage from "./pages/AskQuestionPage";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
             <Route path='/activate/:uid/:token' element={<ActivatePage/>} />
             <Route path='/questions/all' element={<QuestionsPage/>} />
             <Route path='/question/:uid' element={<QuestionDetailsPage/>} />
+            <Route path='/question/ask' element={<AskQuestionPage/>} ></Route>
             <Route path='/answer/:uid' element={<AnswerDetailsPage/>} ></Route>
             <Route path='/answer/create/:uid' element={<AnswerQuestionPage/>} ></Route>
             <Route path='/universities/all' element={<UniversitiesPage/>} />

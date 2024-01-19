@@ -58,8 +58,28 @@ export const deleteQuestion = createAsyncThunk(
 	"questions/delete",
 	async (data, thunkAPI) => {
 		try {
-			console.log("2")
 			return await questionAPIService.deleteQuestion(data);
+		}
+		catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+)
+
+
+// Create question
+export const createQuestion = createAsyncThunk(
+	"questions/create",
+	async (data, thunkAPI) => {
+		try {
+			return await questionAPIService.createQuestion(data);
 		}
 		catch (error) {
 			const message =
@@ -124,6 +144,21 @@ export const questionSlice = createSlice({
 				state.question = action.payload;
 			})
 			.addCase(deleteQuestion.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+
+			.addCase(createQuestion.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(createQuestion.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.question = action.payload;
+			})
+			.addCase(createQuestion.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

@@ -18,8 +18,8 @@ const HomePage = () => {
 								The one place where you can find everything
                                 you need for your studies!
 							</h2>
-							<LinkContainer to="/questions/all/">
-								<Button variant="primary">Get Started</Button>
+							<LinkContainer to="/question/ask">
+								<Button variant="primary">Ask question</Button>
 							</LinkContainer>
 						</div>
 					</div>
