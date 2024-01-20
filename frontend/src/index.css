@@ -239,3 +239,12 @@ a.btn.btn-primary:active {
 		transform: rotate(360deg);
 	}
 }
+
+.edit_img {
+	transform: scale(1.1);	
+	color: grey;
+}
+
+.edit_img:hover {
+	color: black;
+}

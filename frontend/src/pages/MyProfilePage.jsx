@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,6 +8,8 @@ import { getMyProfile } from "../features/profiles/profileSlice";
 
 import { deleteQuestion } from "../features/questions/questionSlice";
 import { deleteAnswer } from "../features/answers/answerSlice";
+
+import "../index.css"
 
 import {
 	MDBCol,
@@ -23,7 +25,8 @@ import {
 	MDBCardFooter,
 } from 'mdb-react-ui-kit';
 
-import { Badge, Button, Popover } from "antd";
+import { Badge, Button, Popover, Modal } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 
 import CloseButton from 'react-bootstrap/CloseButton';
 
@@ -86,6 +89,34 @@ const MyProfilePage = () => {
 		dispatch(getMyProfile(data));
 	}, [dispatch, navigate, user, isError, isErrorUser, message, messageUser,
 		isSuccessUser, dispatch_answer_delete, dispatch_question_delete,]);
+	
+	// Delete answer button trigger modal
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const showModal = () => {
+		setIsModalOpen(true);
+	};
+	const handleOk = (uid) => {
+		handleAnswerDelete(uid);
+		setIsModalOpen(false);
+	};
+	const handleCancel = () => {
+		setIsModalOpen(false);
+	};
+
+
+	// Delete question button trigger modal
+	const [isQuestionModalOpen, setQuestionIsModalOpen] = useState(false);
+	const showQuestionModal = () => {
+		setQuestionIsModalOpen(true);
+	};
+	const handleQuestionOk = (uid) => {
+		handleQuestionDelete(uid);
+		setQuestionIsModalOpen(false);
+	};
+	const handleQuestionCancel = () => {
+		setQuestionIsModalOpen(false);
+	};
+
 
 	if ( isLoading || isLoadingUser ) {
 		return <Spinner />;
@@ -251,55 +282,99 @@ const MyProfilePage = () => {
 				</MDBCard>
   
 				<MDBRow>
+					
 					<MDBCol md="6">
-					<MDBCard className="mb-4 mb-md-0">
-						<MDBCardBody>
-						<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Answers</MDBCardTitle>
-						<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
-							{answers.map((answer) => (
-								<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-3' key={answer.uid}>
-									<div className='ms-2 me-auto'>
-										<Link to={`/answer/${answer.uid}`}>
-											<div className='fw-bold'>{answer.title}</div>
-										</Link>
-										{answer.description.substr(0, 40)}...
-									</div>
+						<MDBCard className="mb-4 mb-md-0">
+							<MDBCardBody style={{minHeight: "146px"}}>
+								<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Answers</MDBCardTitle>
+								<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
+									{answers.map((answer) => (
+										<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-3' key={answer.uid}>
+											<div className='ms-2 me-auto'>
+												<Link to={`/answer/${answer.uid}`}>
+													<div className='fw-bold'>{answer.title}</div>
+												</Link>
+												{answer.description.substr(0, 40)}...
+											</div>
 
-									<Popover content={<h6 style={{color: 'red'}}>Delete answer</h6>} trigger="hover">
-										<CloseButton onClick={() => handleAnswerDelete(answer.uid)} />
-									</Popover>
-
-								</MDBListGroupItem>
-							))}
-						</MDBListGroup>
-						</MDBCardBody>
-					</MDBCard>
+											<div style={{display: "flex", alignItems: "center", padding: "12px"}}>
+												<Popover content={<h6 style={{color: 'red'}}>Delete answer</h6>} trigger="hover">
+													<CloseButton onClick={showModal}/>
+													<Modal title="Delete answer" 
+														open={isModalOpen} onOk={() => handleOk(answer.uid)} onCancel={handleCancel} 
+														footer={[
+															<Button key="back" onClick={handleCancel}>
+															Cancel
+															</Button>,
+															<Button key="submit" type="primary" onClick={() => handleOk(answer.uid)} danger>
+															Delete
+															</Button>,
+														]}
+													>
+														<p>Are you sure that you want to delete this answer?
+															If yes, press "Delete" button, else press cancel. (The answer is deleted forever)
+														</p>
+													</Modal>
+												</Popover>
+								
+												<Popover content={<h6 style={{color: 'green'}}>Edit answer</h6>} trigger="hover">
+													<EditOutlined className="edit_img" onClick={()=> console.log("")} />
+												</Popover>
+											</div>
+											
+										</MDBListGroupItem>
+									))}
+								</MDBListGroup>
+							</MDBCardBody>
+						</MDBCard>
 					</MDBCol>
   
 					<MDBCol md="6">
-					<MDBCard className="mb-4 mb-md-0">
-						<MDBCardBody>
-						<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Questions</MDBCardTitle>
-						<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
-							{questions.map((question) => (
-								<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-1' key={question.uid}>
-									<div className='ms-2 me-auto'>
-										<Link to={`/question/${question.uid}`}>
-											<div className='fw-bold'>{question.title}</div>
-										</Link>
-										{question.short_description.substring(0, 40)}...
-									</div>
-									
-									<Popover content={<h6 style={{color: 'red'}}>Delete question</h6>} trigger="hover">
-										<CloseButton onClick={() => handleQuestionDelete(question.uid)} />
-									</Popover>
+						<MDBCard className="mb-4 mb-md-0">
+							<MDBCardBody style={{minHeight: "146px"}}>
+								<MDBCardTitle style={{textAlign: 'center'}}>{profile.username}'s Questions</MDBCardTitle>
+								<MDBListGroup light numbered style={{ minWidth: '22rem' }}>
+									{questions.map((question) => (
+										<MDBListGroupItem className='d-flex justify-content-between align-items-start mb-1' key={question.uid}>
+											<div className='ms-2 me-auto'>
+												<Link to={`/question/${question.uid}`}>
+													<div className='fw-bold'>{question.title}</div>
+												</Link>
+												{question.short_description.substring(0, 40)}...
+											</div>
+											
+											<div style={{display: "flex", alignItems: "center", padding: "12px"}}>
+												<Popover content={<h6 style={{color: 'red'}}>Delete question</h6>} trigger="hover">
+													<CloseButton onClick={showQuestionModal} />
+													<Modal title="Delete question" 
+														open={isQuestionModalOpen} onOk={() => handleQuestionOk(question.uid)} onCancel={handleQuestionCancel} 
+														footer={[
+															<Button key="back" onClick={handleQuestionCancel}>
+															Cancel
+															</Button>,
+															<Button key="submit" type="primary" onClick={() => handleQuestionOk(question.uid)} danger>
+															Delete
+															</Button>,
+														]}
+													>
+														<p>Are you sure that you want to delete this question?
+															If yes, press "Delete" button, else press cancel. (The question is deleted forever)
+														</p>
+													</Modal>
+												</Popover>
 
-								</MDBListGroupItem>
-							))}
-						</MDBListGroup>
-						</MDBCardBody>
-					</MDBCard>
+												<Popover content={<h6 style={{color: 'green'}}>Edit question</h6>} trigger="hover">
+													<EditOutlined className="edit_img" onClick={()=> navigate(`/question/${question.uid}/update`)} />
+												</Popover>
+											</div>
+
+										</MDBListGroupItem>
+									))}
+								</MDBListGroup>
+							</MDBCardBody>
+						</MDBCard>
 					</MDBCol>
+
 				</MDBRow>
 
 			</MDBCol>

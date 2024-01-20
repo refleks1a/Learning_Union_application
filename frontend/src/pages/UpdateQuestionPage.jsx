@@ -1,36 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { createQuestion, reset } from "../features/questions/questionSlice";
+import { updateQuestion, uploadQuestionImage, deleteQuestionImage, reset } from "../features/questions/questionSlice";
 
 import Title from "../components/Title";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
 
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Checkbox } from "antd";
 
 import "../index.css";
 
 
+const UpdateQuestionPage = () => {    
+    const { uid } = useParams();
 
-const AskQuestionPage = () => {
+    const { question, isQuestionLoading, isQuestionError, messageQuestion } = useSelector(
+		(state) => state.questions
+	);
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+		(state) => state.auth
+	);
 
     const [title, setTitle] = useState("");
 	const [short_description, setShortDescription] = useState("");
     const [details, setDetails] = useState("");
 	const [subject, setSubject] = useState("");
     const [image_1, setImage_1] = useState(null);
-	const [image_2, setImage_2] = useState(null);
-	const [image_3, setImage_3] = useState(null);
+    const [image_2, setImage_2] = useState(null);
+    const [image_3, setImage_3] = useState(null);
+    const [image_num, setImage_num] = useState(0);
 
     const dispatch = useDispatch();
-	const navigate = useNavigate();
+    const dispatch_question = useDispatch();
+    const dispatch_upload_image = useDispatch();
 
-	const { user, isLoading, isError, isSuccess, message } = useSelector(
-		(state) => state.auth
-	);
+	const navigate = useNavigate();
 
     useEffect(() => {
 		if (isError) {
@@ -42,68 +50,75 @@ const AskQuestionPage = () => {
 		}
 
 		dispatch(reset());
-	}, [isError, isSuccess, message, user, navigate, dispatch]);
+	}, [isError, isQuestionError, isSuccess, message, messageQuestion,
+        user, navigate, dispatch, dispatch_question]);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
-		if (!title) {
-			toast.error("A title must be provided");
-		}
 
-		if (!short_description) {
-			toast.error("A short description must be provided");
-		}
-
-        if (!details) {
-			toast.error("Details must be provided");
-		}
-
-        if (!subject) {
-			toast.error("A subject must be provided");
-		}
-        
         const token = user.access
 
-		const questionData = {
-			"title": title,
-            "short_description": short_description,
-			"details": details,
-            "subject": subject,
+        const questionData = {
+            "uid": uid,
             "token": token,
 		};
 
-		if (image_1){
-			questionData.image_1 = image_1
+		if (title) {
+			questionData.title = title
 		}
-		if(image_2) {
-			questionData.image_2 = image_2
+		if (short_description) {
+			questionData.short_description = short_description
 		}
-		if(image_3) {
-			questionData.image_3 = image_3
+        if (details) {
+			questionData.details = details
+		}
+        if (subject) {
+			questionData.subject = subject
 		}
 
-        dispatch(createQuestion(questionData));
-		if(title && short_description && details && subject && token) {
+        dispatch_question(updateQuestion(questionData));
+        
+        const question_image_data = {
+            "uid": uid,
+            "token": token,
+            "image_num": image_num,
+        }
+
+        
+        if(image_1){
+            question_image_data.image_1 = image_1
+            dispatch_upload_image(uploadQuestionImage(question_image_data))
+        }
+        if(image_2){
+            question_image_data.image_2 = image_2
+            dispatch_upload_image(uploadQuestionImage(question_image_data))
+        }
+        if(image_3){
+            question_image_data.image_2 = image_2
+            dispatch_upload_image(uploadQuestionImage(question_image_data))
+        }
+
+		if(!isQuestionError && !isError) {
 			navigate(-1)
 		}
 	};
 
-	return (
-        <>
-			<Title title="login" />
+    return (    
+		<>
+		    <Title title="login" />
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">
 						<section>
 							<h1>
-								Ask question
+                                Edit question
 							</h1>
 							<hr className="hr-text" />
 						</section>
 					</Col>
 				</Row>
 				<BackButton/>
-				{isLoading && <Spinner />}
+				{isLoading && isQuestionLoading && <Spinner />}
 				<Row className="mt-3">
 					<Col className="justify-content-center">
 						<Form onSubmit={submitHandler}>
@@ -154,8 +169,8 @@ const AskQuestionPage = () => {
 								/>
 							</Form.Group>
 
-							<Form.Group controlId="image_1">
-								<Form.Label>Image</Form.Label>
+                            <Form.Group controlId="image_1">
+								<Form.Label>Image 1</Form.Label>
 								<Form.Control
 									type="file"
 									placeholder="Upload image"
@@ -165,22 +180,22 @@ const AskQuestionPage = () => {
 								/>
 							</Form.Group>
 
-							<Form.Group controlId="image_2">
+                            <Form.Group controlId="image_2">
 								<Form.Label>Image 2</Form.Label>
 								<Form.Control
 									type="file"
-									placeholder="Upload image"
+									placeholder="Input image"
 									onChange={(e) =>
 										setImage_2(e.target.files[0])
 									}
 								/>
 							</Form.Group>
 
-							<Form.Group controlId="image_3">
+                            <Form.Group controlId="image_3">
 								<Form.Label>Image 3</Form.Label>
 								<Form.Control
 									type="file"
-									placeholder="Upload image"
+									placeholder="Input image"
 									onChange={(e) =>
 										setImage_3(e.target.files[0])
 									}
@@ -192,7 +207,7 @@ const AskQuestionPage = () => {
 								variant="outline-primary"
 								className="mt-3"
 							>
-								Ask!
+								Edit!
 							</Button>
 
 						</Form>
@@ -204,4 +219,4 @@ const AskQuestionPage = () => {
 };
 
 
-export default AskQuestionPage;
+export default UpdateQuestionPage;

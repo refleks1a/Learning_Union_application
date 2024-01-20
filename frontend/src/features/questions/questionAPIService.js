@@ -28,6 +28,70 @@ const deleteQuestion = async (data) => {
 }
 
 
+// Update question
+const updateQuestion = async (data) => {
+	let formData = new FormData();
+
+	if(data.title){
+		formData.set("title", data.title);
+	}
+	if(data.short_description){
+		formData.set("short_description", data.short_description);
+	}
+	if(data.details){
+		formData.set("details", data.details);
+	}
+	if(data.subject){
+		formData.set("subject", data.subject);
+	}
+	if(data.image_1){
+		formData.set('image_1', data.image_1);
+	}
+	if(data.image_2){
+		formData.set('image_2', data.image_2);
+	}
+	if(data.image_3) {
+		formData.set('image_3', data.image_3);
+	}
+
+	const config = {
+		headers: {
+			"Content-Type": 'multipart/form-data',
+			"Authorization" : `Bearer ${data.token}`
+		},
+	};
+
+	const response  = await axios.patch("/api/v1/questions/update/" + data.uid + "/", formData, config)
+	return response.data
+}
+
+
+// Upload question image
+const uploadQuestionImage = async (data) => {
+	let formData = new FormData();
+
+	if(data.image_1){
+		formData.set('image_1', data.image_1);
+	}
+	if(data.image_2){
+		formData.set('image_2', data.image_2);
+	}
+	if(data.image_3) {
+		formData.set('image_3', data.image_3);
+	}
+
+	const config = {
+		headers: {
+			"Content-Type": 'multipart/form-data',
+			"Authorization" : `Bearer ${data.token}`,
+		},
+	};
+
+	const response  = await axios.post("/api/v1/questions/question/" + data.uid + "/upload-image/", formData, config)
+	return response.data
+}
+
+
 // Create question
 const createQuestion = async (data) => {
 	let formData = new FormData();
@@ -53,12 +117,13 @@ const createQuestion = async (data) => {
 			"Authorization" : `Bearer ${data.token}`,
 		},
 	};
+
 	const response  = await axios.post("/api/v1/questions/create/", formData, config)
 	return response.data
 }
 
 
 const questionAPIService = { getQuestions, getQuestionDetails,
-	 deleteQuestion, createQuestion };
+	 deleteQuestion, createQuestion, updateQuestion, uploadQuestionImage };
 
 export default questionAPIService;

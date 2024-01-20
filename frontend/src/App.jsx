@@ -20,6 +20,7 @@ import AnswerQuestionPage from "./pages/AnswerQuestionPage";
 import MyProfilePage from "./pages/MyProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
 import AskQuestionPage from "./pages/AskQuestionPage";
+import UpdateQuestionPage from "./pages/UpdateQuestionPage";
 
 
 function App() {
@@ -30,18 +31,26 @@ function App() {
         <main className='py-3'>
           <Routes>
             <Route path='/' element={<HomePage/>} />
+
             <Route path='/login' element={<LoginPage/>} />
             <Route path='/register' element={<RegisterPage/>} />
             <Route path='/activate/:uid/:token' element={<ActivatePage/>} />
+
             <Route path='/questions/all' element={<QuestionsPage/>} />
             <Route path='/question/:uid' element={<QuestionDetailsPage/>} />
             <Route path='/question/ask' element={<AskQuestionPage/>} ></Route>
+            <Route path='/question/:uid/update' element={<UpdateQuestionPage/>} ></Route>
+
             <Route path='/answer/:uid' element={<AnswerDetailsPage/>} ></Route>
             <Route path='/answer/create/:uid' element={<AnswerQuestionPage/>} ></Route>
+
             <Route path='/universities/all' element={<UniversitiesPage/>} />
+
             <Route path='/majors/all' element={<MajorsPage/>} />
+
             <Route path='/profile/me' element={<MyProfilePage/>} ></Route>
             <Route path="/profile/:uid" element={<UserProfilePage/>} ></Route>
+            
             <Route path="*" element={<NotFound/>} />
           </Routes>
           <ToastContainer theme='dark'/>
