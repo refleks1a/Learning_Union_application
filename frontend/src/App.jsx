@@ -21,6 +21,7 @@ import MyProfilePage from "./pages/MyProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
 import AskQuestionPage from "./pages/AskQuestionPage";
 import UpdateQuestionPage from "./pages/UpdateQuestionPage";
+import UpdateAnswerPage from "./pages/UpdateAnswerPage";
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
 
             <Route path='/answer/:uid' element={<AnswerDetailsPage/>} ></Route>
             <Route path='/answer/create/:uid' element={<AnswerQuestionPage/>} ></Route>
+            <Route path='/answer/:uid/update' element={<UpdateAnswerPage/>} ></Route>
 
             <Route path='/universities/all' element={<UniversitiesPage/>} />
 

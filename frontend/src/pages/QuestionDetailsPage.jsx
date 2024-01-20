@@ -16,6 +16,7 @@ import Spinner from "../components/Spinner";
 import AnswersList from "../components/AnswersList";
 import DetailsBody from "../components/DetailsBody";
 import BackButton from "../components/BackButton";
+import Title from "../components/Title";
 
 
 const { Content } = Layout;
@@ -97,48 +98,49 @@ const QuestionDetailsPage = () => {
 	]
 
 	return (
-	<Layout>
-		<Layout 
-		style={{minHeigh: 900}}>
-			<Layout
-			style={{padding: '24px 24px ',}}>
-				<Content
-					style={{
-					padding: 24,
-					margin: 0,
-					minHeight: 280,
-					background: colorBgContainer,
-					borderRadius: borderRadiusLG,
-					}}>
-					<Row style={{marginLeft: "60px"}}>
-						<Breadcrumb style={{ margin: '16px 0' }} items={breadcrumb_items}></Breadcrumb>
-					</Row>
-					<Row style={{marginLeft: "60px"}}>
-						<BackButton/>
-					</Row>
-					<Divider>
-						<h1 style={{
-							textAlign: 'center',
-							fontWeight: 450,
-							fontSize: 32,
+		<Layout>
+			<Title title="Question details" />
+			<Layout 
+			style={{minHeigh: 900}}>
+				<Layout
+				style={{padding: '24px 24px ',}}>
+					<Content
+						style={{
+						padding: 24,
+						margin: 0,
+						minHeight: 280,
+						background: colorBgContainer,
+						borderRadius: borderRadiusLG,
 						}}>
-							{question.title}
-						</h1>
-					</Divider>
-					<Row style={{marginLeft: "60px"}}>
-						<Descriptions title="Question Info" items={items} contentStyle={{fontSize: 17}} labelStyle={{fontSize: 17}} />
-						<Link to={`/answer/create/${uid}`}>
-							<Button size="lg" variant="outline-primary">Answer this question</Button>
-						</Link>
-					</Row>
-						
-					<Divider/>
-					<DetailsBody item={question} item_name={"question"}/>
-					<AnswersList question_uid={uid}/>
-				</Content>
+						<Row style={{marginLeft: "60px"}}>
+							<Breadcrumb style={{ margin: '16px 0' }} items={breadcrumb_items}></Breadcrumb>
+						</Row>
+						<Row style={{marginLeft: "60px"}}>
+							<BackButton/>
+						</Row>
+						<Divider>
+							<h1 style={{
+								textAlign: 'center',
+								fontWeight: 450,
+								fontSize: 32,
+							}}>
+								{question.title}
+							</h1>
+						</Divider>
+						<Row style={{marginLeft: "60px"}}>
+							<Descriptions title="Question Info" items={items} contentStyle={{fontSize: 17}} labelStyle={{fontSize: 17}} />
+							<Link to={`/answer/create/${uid}`}>
+								<Button size="lg" variant="outline-primary">Answer this question</Button>
+							</Link>
+						</Row>
+							
+						<Divider/>
+						<DetailsBody item={question} item_name={"question"}/>
+						<AnswersList question_uid={uid}/>
+					</Content>
+				</Layout>
 			</Layout>
-		</Layout>
-	</Layout>	
+		</Layout>	
   );
 };
 

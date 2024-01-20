@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useParams, Link } from "react-router-dom";
 
 import Spinner from "../components/Spinner";
+import Title from "../components/Title";
 import { getProfile } from "../features/profiles/profileSlice";
 import BackButton from "../components/BackButton";
 
@@ -77,6 +78,8 @@ const UserProfilePage = () => {
 	}
 
 	return (
+        <>
+        <Title title="Profile"/>
 		<section style={{ backgroundColor: '#eee' }}>
 		<MDBContainer className="py-5 mt-5">
             <BackButton/>
@@ -268,6 +271,7 @@ const UserProfilePage = () => {
             </MDBRow>
 		</MDBContainer>
 	  </section>
+      </>
 	);
 };
 

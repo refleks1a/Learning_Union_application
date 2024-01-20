@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 
 import Spinner from "../components/Spinner";
+import Title from "../components/Title";
 import { getMyProfile } from "../features/profiles/profileSlice";
 
 import { deleteQuestion } from "../features/questions/questionSlice";
@@ -90,6 +91,7 @@ const MyProfilePage = () => {
 	}, [dispatch, navigate, user, isError, isErrorUser, message, messageUser,
 		isSuccessUser, dispatch_answer_delete, dispatch_question_delete,]);
 	
+
 	// Delete answer button trigger modal
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const showModal = () => {
@@ -152,6 +154,7 @@ const MyProfilePage = () => {
 
 	return (
 		<section style={{ backgroundColor: '#eee' }}>
+		<Title title="My profile" />
 		<MDBContainer className="py-5 mt-5">
   
 		<MDBRow>
@@ -318,7 +321,7 @@ const MyProfilePage = () => {
 												</Popover>
 								
 												<Popover content={<h6 style={{color: 'green'}}>Edit answer</h6>} trigger="hover">
-													<EditOutlined className="edit_img" onClick={()=> console.log("")} />
+													<EditOutlined className="edit_img" onClick={()=> navigate(`/answer/${answer.uid}/update`)} />
 												</Popover>
 											</div>
 											

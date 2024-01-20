@@ -80,7 +80,7 @@ const AnswerQuestionPage = () => {
 
 	return (
         <>
-			<Title title="login" />
+			<Title title="Answer question" />
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">

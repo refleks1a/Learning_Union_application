@@ -9,6 +9,7 @@ import moment from "moment";
 import Spinner from "../components/Spinner";
 import DetailsBody from "../components/DetailsBody";
 import BackButton from "../components/BackButton";
+import Title from "../components/Title";
 
 import { getAnswerDetails } from "../features/answers/answerSlice";
 
@@ -83,11 +84,12 @@ const AnswerDetailsPage = () => {
 	]
 	
 	return (
-		<Layout>
+	<Layout>
+		<Title title="Answer details" />
 		<Layout 
-		style={{minHeigh: 900}}>
+			style={{minHeigh: 900}}>
 			<Layout
-			style={{padding: '24px 24px ',}}>
+				style={{padding: '24px 24px ',}}>
 				<Content
 					style={{
 					padding: 24,

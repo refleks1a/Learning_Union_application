@@ -90,7 +90,7 @@ const AskQuestionPage = () => {
 
 	return (
         <>
-			<Title title="login" />
+			<Title title="Ask question" />
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">

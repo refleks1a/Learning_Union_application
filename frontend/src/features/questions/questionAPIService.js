@@ -44,16 +44,7 @@ const updateQuestion = async (data) => {
 	if(data.subject){
 		formData.set("subject", data.subject);
 	}
-	if(data.image_1){
-		formData.set('image_1', data.image_1);
-	}
-	if(data.image_2){
-		formData.set('image_2', data.image_2);
-	}
-	if(data.image_3) {
-		formData.set('image_3', data.image_3);
-	}
-
+	
 	const config = {
 		headers: {
 			"Content-Type": 'multipart/form-data',

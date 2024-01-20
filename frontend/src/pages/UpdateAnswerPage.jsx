@@ -3,38 +3,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { updateQuestion, uploadQuestionImage, deleteQuestionImage, reset } from "../features/questions/questionSlice";
+import { updateAnswer, uploadAnswerImage, reset } from "../features/answers/answerSlice";
 
 import Title from "../components/Title";
 import Spinner from "../components/Spinner";
 import BackButton from "../components/BackButton";
 
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { Checkbox } from "antd";
 
 import "../index.css";
 
 
-const UpdateQuestionPage = () => {    
+const UpdateAnswerPage = () => {    
     const { uid } = useParams();
 
-    const { question, isQuestionLoading, isQuestionError, messageQuestion } = useSelector(
-		(state) => state.questions
+    const { answer, isAnswerLoading, isAnswerError, messageAnswer } = useSelector(
+		(state) => state.answers
 	);
     const { user, isLoading, isError, isSuccess, message } = useSelector(
 		(state) => state.auth
 	);
 
     const [title, setTitle] = useState("");
-	const [short_description, setShortDescription] = useState("");
-    const [details, setDetails] = useState("");
-	const [subject, setSubject] = useState("");
+	const [description, setDescription] = useState("");
     const [image_1, setImage_1] = useState(null);
     const [image_2, setImage_2] = useState(null);
     const [image_3, setImage_3] = useState(null);
 
     const dispatch = useDispatch();
-    const dispatch_question = useDispatch();
+    const dispatch_answer = useDispatch();
     const dispatch_upload_image = useDispatch();
 
 	const navigate = useNavigate();
@@ -44,79 +41,77 @@ const UpdateQuestionPage = () => {
 			toast.error(message);
 		}
 
+        if (isAnswerError){
+            toast.error(messageAnswer)
+        }
+
 		if (!user) {
 			navigate("/login");
 		}
 
 		dispatch(reset());
-	}, [isError, isQuestionError, isSuccess, message, messageQuestion,
-        user, navigate, dispatch, dispatch_question]);
+	}, [isError, isAnswerError, isSuccess, message, messageAnswer,
+        user, navigate, dispatch, dispatch_answer]);
 
 	const submitHandler = (e) => {
 		e.preventDefault();
 
         const token = user.access
 
-        const questionData = {
+        const answerData = {
             "uid": uid,
             "token": token,
 		};
 
 		if (title) {
-			questionData.title = title
+			answerData.title = title
 		}
-		if (short_description) {
-			questionData.short_description = short_description
-		}
-        if (details) {
-			questionData.details = details
-		}
-        if (subject) {
-			questionData.subject = subject
+		if (description) {
+			answerData.description = description
 		}
 
-        dispatch_question(updateQuestion(questionData));
+        dispatch_answer(updateAnswer(answerData));
         
-        const question_image_data = {
+        const answer_image_data = {
             "uid": uid,
             "token": token,
         }
 
-        
         if(image_1){
-            question_image_data.image_1 = image_1
+            answer_image_data.image_1 = image_1
         }
         if(image_2){
-            question_image_data.image_2 = image_2
+            answer_image_data.image_2 = image_2
         }
         if(image_3){
-            question_image_data.image_3 = image_3
+            answer_image_data.image_3 = image_3
         }
-		if(image_1 || image_2 || image_3){
-			dispatch_upload_image(uploadQuestionImage(question_image_data))
-		}
 
-		if(!isQuestionError && !isError) {
+        if(image_1 || image_2 || image_3) {
+            dispatch_upload_image(uploadAnswerImage(answer_image_data))
+        }
+
+		if(!isAnswerError && !isError) {
 			navigate(-1)
 		}
 	};
 
     return (    
 		<>
-		    <Title title="login" />
+		    <Title title="Edit answer" />
 			<Container>
 				<Row>
 					<Col className="mg-top text-center">
 						<section>
 							<h1>
-                                Edit question
+                                Edit answer
 							</h1>
 							<hr className="hr-text" />
 						</section>
 					</Col>
 				</Row>
 				<BackButton/>
-				{isLoading && isQuestionLoading && <Spinner />}
+				{isLoading && isAnswerLoading && <Spinner />}
 				<Row className="mt-3">
 					<Col className="justify-content-center">
 						<Form onSubmit={submitHandler}>
@@ -131,38 +126,14 @@ const UpdateQuestionPage = () => {
 								/>
 							</Form.Group>
 
-							<Form.Group controlId="short_description">
-								<Form.Label>Short description</Form.Label>
+							<Form.Group controlId="description">
+								<Form.Label>Description</Form.Label>
 								<Form.Control
 									type="text"
-									placeholder="Enter short description"
-									value={short_description}
+									placeholder="Enter description"
+									value={description}
 									onChange={(e) =>
-										setShortDescription(e.target.value)
-									}
-								/>
-							</Form.Group>
-
-                            <Form.Group controlId="details">
-								<Form.Label>Details of the question</Form.Label>
-								<Form.Control
-									type="text"
-									placeholder="Enter details"
-									value={details}
-									onChange={(e) =>
-										setDetails(e.target.value)
-									}
-								/>
-							</Form.Group>
-
-                            <Form.Group controlId="subject">
-								<Form.Label>Subject of the question</Form.Label>
-								<Form.Control
-									type="text"
-									placeholder="Enter subject"
-									value={subject}
-									onChange={(e) =>
-										setSubject(e.target.value)
+										setDescription(e.target.value)
 									}
 								/>
 							</Form.Group>
@@ -217,4 +188,4 @@ const UpdateQuestionPage = () => {
 };
 
 
-export default UpdateQuestionPage;
+export default UpdateAnswerPage;

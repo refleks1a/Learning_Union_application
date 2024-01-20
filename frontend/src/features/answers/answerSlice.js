@@ -92,6 +92,47 @@ export const deleteAnswer = createAsyncThunk(
 );
 
 
+// Update answer
+export const updateAnswer = createAsyncThunk(
+	"answers/update",
+	async (data, thunkAPI) => {
+		try {
+			return await answerAPIService.updateAnswer(data);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
+
+// Upload answer image
+export const uploadAnswerImage = createAsyncThunk(
+	"answers/uploadImage",
+	async (data, thunkAPI) => {
+		try {
+			return await answerAPIService.uploadAnswerImage(data);
+		}
+		catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+)
+
+
 export const answerSlice = createSlice({
 	name: "answer",
 	initialState,
@@ -159,6 +200,36 @@ export const answerSlice = createSlice({
 				state.message = action.payload;
 			})
 
+
+			.addCase(updateAnswer.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateAnswer.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.answer = action.payload;
+			})
+			.addCase(updateAnswer.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+
+			.addCase(uploadAnswerImage.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(uploadAnswerImage.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.answer = action.payload;
+			})
+			.addCase(uploadAnswerImage.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			
 			
 	},
 });
