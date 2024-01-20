@@ -40,7 +40,7 @@ const createAnswer = async (answerData) => {
 		},
 	};
 	
-	const response = await axios.post("/api/v1/answers/create/", formData, config)
+	const response = await axios.post("/api/v1/answers/create/", formData, config);
 	return response.data
 }
 
@@ -53,6 +53,18 @@ const deleteAnswer = async (data) => {
 		},
 	};
 	const response = await axios.delete("/api/v1/answers/delete/" + data.uid + "/", config);
+	return response.data
+}
+
+
+// Change answer solution status
+const isSolutionAnswer = async (data) => {
+	const config = {
+		headers: {
+			"Authorization" : `Bearer ${data.token}`
+		},
+	};
+	const response = await axios.patch("/api/v1/answers/is-solution/" + data.uid + "/", data, config);
 	return response.data
 }
 
@@ -75,7 +87,7 @@ const updateAnswer = async (data) => {
 		},
 	};
 
-	const response  = await axios.patch("/api/v1/answers/update/" + data.uid + "/", formData, config)
+	const response  = await axios.patch("/api/v1/answers/update/" + data.uid + "/", formData, config);
 	return response.data
 }
 
@@ -101,12 +113,12 @@ const uploadAnswerImage = async (data) => {
 		},
 	};
 
-	const response  = await axios.post("/api/v1/answers/answer/" + data.uid + "/upload-image/", formData, config)
+	const response  = await axios.post("/api/v1/answers/answer/" + data.uid + "/upload-image/", formData, config);
 	return response.data
 }
 
 
-const answerAPIService = { getAnswers, getAnswerDetails,
+const answerAPIService = { getAnswers, getAnswerDetails, isSolutionAnswer,
 	createAnswer, deleteAnswer, updateAnswer, uploadAnswerImage };
 
 export default answerAPIService;

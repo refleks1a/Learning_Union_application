@@ -133,6 +133,27 @@ export const uploadAnswerImage = createAsyncThunk(
 )
 
 
+// Change answer solution status
+export const isSolutionAnswer = createAsyncThunk(
+	"answers/isSolution",
+	async (data, thunkAPI) => {
+		try {
+			return await answerAPIService.isSolutionAnswer(data);
+		}
+		catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+)
+
+
 export const answerSlice = createSlice({
 	name: "answer",
 	initialState,
@@ -225,6 +246,21 @@ export const answerSlice = createSlice({
 				state.answer = action.payload;
 			})
 			.addCase(uploadAnswerImage.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+			
+			.addCase(isSolutionAnswer.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(isSolutionAnswer.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.answer = action.payload;
+			})
+			.addCase(isSolutionAnswer.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

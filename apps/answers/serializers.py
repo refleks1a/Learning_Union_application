@@ -13,8 +13,10 @@ class AnswerSerializer(serializers.ModelSerializer):
     image_2 = serializers.SerializerMethodField()
     image_3 = serializers.SerializerMethodField()
     profile_photo = serializers.SerializerMethodField()
+    
     full_name = serializers.SerializerMethodField(read_only=True)
     question_uid = serializers.SerializerMethodField()
+    question_author_uid = serializers.SerializerMethodField()
     author_uid = serializers.SerializerMethodField()
 
 
@@ -22,7 +24,7 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = ["uid", "title", "description", "date_answered", "date_modified",
                   "username", "email", "full_name", "author_uid", "profile_photo",
-                  "image_1", "image_2", "image_3", "question_uid"]
+                  "image_1", "image_2", "image_3", "question_uid", "question_author_uid"]
         
 
     def get_image_1(self, obj):
@@ -48,6 +50,9 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def get_author_uid(self, obj):
         return obj.author.id
+    
+    def get_question_author_uid(self, obj):
+        return obj.question.author.id
 
     def get_full_name(self, obj):
         first_name = obj.author.user.first_name
