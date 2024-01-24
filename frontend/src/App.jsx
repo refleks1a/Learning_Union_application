@@ -22,7 +22,7 @@ import UserProfilePage from "./pages/UserProfilePage";
 import AskQuestionPage from "./pages/AskQuestionPage";
 import UpdateQuestionPage from "./pages/UpdateQuestionPage";
 import UpdateAnswerPage from "./pages/UpdateAnswerPage";
-
+import UpdateProfilePage from "./pages/UpdateProfilePage";
 
 function App() {
   return (
@@ -52,6 +52,7 @@ function App() {
 
             <Route path='/profile/me' element={<MyProfilePage/>} ></Route>
             <Route path="/profile/:uid" element={<UserProfilePage/>} ></Route>
+            <Route path='/profile/update' element={<UpdateProfilePage/>} ></Route>
             
             <Route path="*" element={<NotFound/>} />
           </Routes>

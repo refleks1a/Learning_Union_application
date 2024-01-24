@@ -179,7 +179,7 @@ const MyProfilePage = () => {
 					<p className="text-muted mb-1">{profile.username}</p>
 					<p className="text-muted mb-4">{profile.country}, {profile.city}</p>
 					<div className="d-flex justify-content-center mb-2">
-					<Link to={"/"}>
+					<Link to={"/profile/update"}>
 						<Button variant="primary" >Change(update) profile info</Button>
 					</Link>
 					</div>

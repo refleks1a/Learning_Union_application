@@ -11,7 +11,8 @@ const initialState = {
 	message: "",
 };
 
-// get my profile
+
+// Get my profile
 export const getMyProfile = createAsyncThunk(
 	"profile/getMe",
 	async (data, thunkAPI) => {
@@ -30,12 +31,33 @@ export const getMyProfile = createAsyncThunk(
 	}
 );
 
-// get user's profile
+
+// Get user's profile
 export const getProfile = createAsyncThunk(
 	"profile/getProfile",
 	async (data, thunkAPI) => {
 		try {
 			return await profileAPIService.getProfile(data);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
+
+// Update user's profile
+export const updateProfile = createAsyncThunk(
+	"profile/updateProfile",
+	async (data, thunkAPI) => {
+		try {
+			return await profileAPIService.updateProfile(data);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -86,6 +108,23 @@ export const profileSlice = createSlice({
 				state.isError = true;
 				state.message = action.payload;
 			})
+
+			
+			.addCase(updateProfile.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProfile.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.profile = action.payload;
+			})
+			.addCase(updateProfile.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+
 	},
 });
 
