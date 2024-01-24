@@ -3,8 +3,9 @@ import FormData from "form-data";
 
 
 // Get Questions
-const getQuestions = async () => {
-	const response = await axios.get("/api/v1/questions/all/");
+const getQuestions = async (data) => {
+	const response = await axios.get("/api/v1/questions/all/", 
+	{params: data});
 	return response.data;
 };
 

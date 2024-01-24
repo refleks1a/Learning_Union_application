@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 import Title from "../components/Title";
 import Spinner from "../components/Spinner";
-import BackButton from "../components/BackButton";
 
 import { Col, Container, Row, Button } from "react-bootstrap";
 import Form from 'react-bootstrap/Form';
@@ -142,14 +141,14 @@ const UpdateProfilePage = () => {
 	return (    
 		<>
 		    <Title title="Edit profile" />
-			<Container>
+			<Container style={{background: "white", minHeight: "820px", borderRadius: "17px"}}>
 				<Row>
-					<Col className="mg-top text-center">
+					<Col className="mg-top">
 						<section>
-							<h1>
+							<h1 className="text-center">
                                 Edit profile
 							</h1>
-							<h5>
+							<h5 className="text-center">
 								Choose what you want to edit!
 							</h5>
 							<hr className="hr-text" />
@@ -157,7 +156,8 @@ const UpdateProfilePage = () => {
 					</Col>
 				</Row>
 				{isLoading && <Spinner />}
-				<Row className="mt-3" style={{display: "block", marginLeft: "7.5vh"}}>
+				<Row className="mt-3" 
+				style={{display: "block", marginLeft: "7.5vh"}}>
 					<Col>
                         <Form onSubmit={submitHandler}>
                             <Row >
@@ -347,14 +347,22 @@ const UpdateProfilePage = () => {
                             </Row>
 
 							<Row>
-								<Button
-									type="submit"
-									variant="outline-primary"
-									className="mt-4"
-									style={{width: "200px"}}
-								>
-									Edit!
-								</Button>
+								<Col>
+									<Button
+										type="submit"
+										variant="outline-success"
+										className="mt-4"
+										style={{width: "200px"}}
+									>
+										Edit!
+									</Button>
+									<Button className="mt-4" variant="outline-danger"
+									style={{marginLeft: "12.5px"}} 
+									onClick={() => navigate(-1)}
+									>
+										Cancel
+									</Button>
+								</Col>
 							</Row>
 
                         </Form>
