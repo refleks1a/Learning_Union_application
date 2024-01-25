@@ -33,7 +33,7 @@ const University = ({ university }) => {
 					</Col>
 				</Row>
 				<hr />
-				<Link to={`/university/`}>
+				<Link to={`/universities/${university.uid}`}>
 					<Button variant="primary">Get More Info &gt; &gt;</Button>
 				</Link>
 			</Card.Body>

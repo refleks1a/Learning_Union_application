@@ -23,6 +23,7 @@ import AskQuestionPage from "./pages/AskQuestionPage";
 import UpdateQuestionPage from "./pages/UpdateQuestionPage";
 import UpdateAnswerPage from "./pages/UpdateAnswerPage";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
+import UniversityDetailsPage from "./pages/UniversityDetailsPage";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             <Route path='/answer/:uid/update' element={<UpdateAnswerPage/>} ></Route>
 
             <Route path='/universities/all' element={<UniversitiesPage/>} />
+            <Route path='/universities/:uid' element={<UniversityDetailsPage/>} ></Route>
 
             <Route path='/majors/all' element={<MajorsPage/>} />
 

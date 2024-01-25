@@ -7,6 +7,14 @@ const getUniversities = async () => {
 	return response.data;
 };
 
-const universitiesAPIService = { getUniversities };
+
+// Get University Details
+const getUniversityDetails = async (uid) => {
+	const response = await axios.get("/api/v1/universities/university/" + uid + "/");
+	return response.data;
+};
+
+
+const universitiesAPIService = { getUniversities, getUniversityDetails };
 
 export default universitiesAPIService;

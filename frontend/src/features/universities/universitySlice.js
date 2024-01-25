@@ -11,6 +11,7 @@ const initialState = {
 	message: "",
 };
 
+
 // Get all universities
 export const getUniversities = createAsyncThunk(
 	"universities/getAll",
@@ -29,6 +30,27 @@ export const getUniversities = createAsyncThunk(
 		}
 	}
 );
+
+
+// Get university details
+export const getUniversityDetails = createAsyncThunk(
+	"universities/details",
+	async (uid, thunkAPI) => {
+		try {
+			return await universityAPIService.getUniversityDetails(uid);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
 
 export const universitySlice = createSlice({
 	name: "university",
@@ -50,7 +72,24 @@ export const universitySlice = createSlice({
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
-			});
+			})
+
+
+			.addCase(getUniversityDetails.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getUniversityDetails.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.university = action.payload;
+			})
+			.addCase(getUniversityDetails.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+
+
 	},
 });
 
