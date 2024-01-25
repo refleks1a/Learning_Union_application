@@ -14,7 +14,7 @@ const Major = ({ major }) => {
 				<Card.Text as="p">
 					{major.num_students} students of these major registered.
 				</Card.Text>
-				<Link to={`/major/`}>	
+				<Link to={`/majors/${major.uid}`}>	
 					<Button variant="primary">Get More Info &gt; &gt;</Button>
 				</Link>
 			</Card.Body>

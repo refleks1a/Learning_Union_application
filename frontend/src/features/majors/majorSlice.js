@@ -11,6 +11,7 @@ const initialState = {
 	message: "",
 };
 
+
 // get all majors
 export const getMajors = createAsyncThunk(
 	"majors/getAll",
@@ -29,6 +30,27 @@ export const getMajors = createAsyncThunk(
 		}
 	}
 );
+
+
+// get major details
+export const getMajorDetails = createAsyncThunk(
+	"majors/details",
+	async (uid, thunkAPI) => {
+		try {
+			return await majorAPIService.getMajorDetails(uid);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	}
+);
+
 
 export const majorSlice = createSlice({
 	name: "major",
@@ -50,7 +72,24 @@ export const majorSlice = createSlice({
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
+			})
+
+
+			.addCase(getMajorDetails.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getMajorDetails.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.major = action.payload;
+			})
+			.addCase(getMajorDetails.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
 			});
+
+
 	},
 });
 

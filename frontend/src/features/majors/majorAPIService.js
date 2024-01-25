@@ -7,6 +7,14 @@ const getMajors = async () => {
 	return response.data;
 };
 
-const majorAPIService = { getMajors };
+
+// Get Major Details
+const getMajorDetails = async (uid) => {
+	const response = await axios.get("/api/v1/majors/major/" + uid + "/");
+	return response.data;
+};
+
+
+const majorAPIService = { getMajors, getMajorDetails };
 
 export default majorAPIService;

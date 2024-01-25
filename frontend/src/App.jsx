@@ -24,6 +24,7 @@ import UpdateQuestionPage from "./pages/UpdateQuestionPage";
 import UpdateAnswerPage from "./pages/UpdateAnswerPage";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import UniversityDetailsPage from "./pages/UniversityDetailsPage";
+import MajorDetailsPage from "./pages/MajorDetailsPage";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
             <Route path='/universities/:uid' element={<UniversityDetailsPage/>} ></Route>
 
             <Route path='/majors/all' element={<MajorsPage/>} />
+            <Route path='/majors/:uid' element={<MajorDetailsPage/>} />
 
             <Route path='/profile/me' element={<MyProfilePage/>} ></Route>
             <Route path="/profile/:uid" element={<UserProfilePage/>} ></Route>
