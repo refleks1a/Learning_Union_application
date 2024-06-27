@@ -43,8 +43,8 @@ const MajorDetailsPage = () => {
 	if (isLoading) {
 		return <Spinner/>
 	}
-	console.log(major)
-	const items = [
+
+    const items = [
 		{
 			key: '1',
 			label: 'Name',

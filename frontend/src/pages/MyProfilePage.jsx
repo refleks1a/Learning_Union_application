@@ -155,36 +155,39 @@ const MyProfilePage = () => {
 	return (
 		<section style={{ backgroundColor: '#eee' }}>
 		<Title title="My profile" />
-		<MDBContainer className="py-5 mt-5">
-  
+		<MDBContainer className="py-5 mt-2">
+			<MDBRow>
+				<h1 className="text-center">My profile</h1>
+				<hr className="hr-text" />
+			</MDBRow>
 			<MDBRow>
 				<MDBCol lg="4">
-				<MDBCard className="mb-4">
-					{profile.top_helper ? (
-						<Badge.Ribbon text="Top helper" color="cyan"/>
-					) : (null)}
-					{profile.is_student ? (
-						<Badge.Ribbon text="Student" color="purple" style={{marginTop: '30px'}}/>
-					) : (null)}
-					{profile.is_teacher ? (
-						<Badge.Ribbon text="Teacher" color="magenta" style={{marginTop: '30px'}}/>
-					) : (null)}
-					<MDBCardBody className="text-center">
-						<MDBCardImage
-							src={profile.profile_photo}
-							alt="avatar"
-							className="rounded-circle"
-							style={{ width: '150px' }}
-							fluid />
-						<p className="text-muted mb-1">{profile.username}</p>
-						<p className="text-muted mb-4">{profile.country}, {profile.city}</p>
-						<div className="d-flex justify-content-center mb-2">
-							<Link to={"/profile/update"}>
-								<Button variant="primary" >Change(update) profile info</Button>
-							</Link>
-						</div>
-					</MDBCardBody>
-				</MDBCard>
+					<MDBCard className="mb-4">
+						{profile.top_helper ? (
+							<Badge.Ribbon text="Top helper" color="cyan"/>
+						) : (null)}
+						{profile.is_student ? (
+							<Badge.Ribbon text="Student" color="purple" style={{marginTop: '30px'}}/>
+						) : (null)}
+						{profile.is_teacher ? (
+							<Badge.Ribbon text="Teacher" color="magenta" style={{marginTop: '30px'}}/>
+						) : (null)}
+						<MDBCardBody className="text-center">
+							<MDBCardImage
+								src={profile.profile_photo}
+								alt="avatar"
+								className="rounded-circle"
+								style={{ width: '150px' }}
+								fluid />
+							<p className="text-muted mb-1">{profile.username}</p>
+							<p className="text-muted mb-4">{profile.country}, {profile.city}</p>
+							<div className="d-flex justify-content-center mb-2">
+								<Link to={"/profile/update"}>
+									<Button variant="primary" >Change(update) profile info</Button>
+								</Link>
+							</div>
+						</MDBCardBody>
+					</MDBCard>
 	
 					<MDBCard alignment='center'>
 						<MDBCardBody>

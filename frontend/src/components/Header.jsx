@@ -54,6 +54,15 @@ const Header = () => {
 							</LinkContainer>
 
 							{user ? (
+								<LinkContainer to="/profile/all/">
+									<Nav.Link>Users</Nav.Link>
+								</LinkContainer>
+							) : (
+								<></>
+							)
+							}
+
+							{user ? (
 								<NavDropdown
 									title={
 										user.firstName

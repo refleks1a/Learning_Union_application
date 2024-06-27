@@ -146,7 +146,7 @@ const UpdateProfilePage = () => {
 					<Col className="mg-top">
 						<section>
 							<h1 className="text-center">
-                                Edit profile
+                                Edit my profile
 							</h1>
 							<h5 className="text-center">
 								Choose what you want to edit!

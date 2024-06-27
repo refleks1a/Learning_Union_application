@@ -1,6 +1,19 @@
 import axios from "axios";
 
 
+// Get all profiles
+const getAllProfiles = async (data) => {
+	const config = {
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization" : `Bearer ${data.token}`
+		},
+	};
+	const response = await axios.get("/api/v1/profile/all/", config);
+	return response.data;
+};
+
+
 // Get my profile
 const getMyProfile = async (data) => {
     const config = {
@@ -95,6 +108,8 @@ const updateProfile = async (data) => {
 	return response.data
 }
 
-const profileAPIService = { getMyProfile, getProfile, updateProfile };
+
+const profileAPIService = { getMyProfile, getProfile,
+	updateProfile, getAllProfiles };
 
 export default profileAPIService;

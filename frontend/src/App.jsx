@@ -25,6 +25,7 @@ import UpdateAnswerPage from "./pages/UpdateAnswerPage";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import UniversityDetailsPage from "./pages/UniversityDetailsPage";
 import MajorDetailsPage from "./pages/MajorDetailsPage";
+import AllProfilesPage from "./pages/AllProfilesPage"
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
             <Route path='/profile/me' element={<MyProfilePage/>} ></Route>
             <Route path="/profile/:uid" element={<UserProfilePage/>} ></Route>
             <Route path='/profile/update' element={<UpdateProfilePage/>} ></Route>
+            <Route path='/profile/all' element={<AllProfilesPage/>} ></Route>
             
             <Route path="*" element={<NotFound/>} />
           </Routes>
